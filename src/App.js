@@ -87,10 +87,47 @@ function SearchBox() {
 }
 
 function LoginBox(props) {
+  const loggedIn = props.loggedIn;
+  const userName = props.userName;
   const loginError = props.loginError;
   const loginName = props.loginFields.loginName;
   const loginPassword = props.loginFields.loginPassword;
   const attemptLogin = props.attemptLogin;
+  const attemptLogout = props.attemptLogout;
+
+  function renderLoginBox() {
+    if (loggedIn) {
+      return (
+        <>
+          <p>Logged in as:</p>
+          <p>{userName}</p>
+          <button
+            className="button logout-button"
+            id="logout-button"
+            onClick={() => attemptLogout()}>
+              Logout
+          </button>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <h3>Login</h3>
+          <p>Email:</p>
+          <input type="email" size="30" maxLength="30" autoComplete="off" className="input login-name" id="login-name" ref={loginName}/>
+          <p>Password:</p>
+          <input type="password" size="30" maxLength="30" autoComplete="off" className="input login-password" id="login-password" ref={loginPassword}/>
+          <p id="login-failed-message">Login failed!</p>
+          <button
+            className="button login-button"
+            id="login-submit-button"
+            onClick={() => attemptLogin()}>
+              Login
+          </button>
+        </>
+      );
+    }
+  }
 
   React.useEffect(() => {
     if (loginError) {
@@ -102,18 +139,7 @@ function LoginBox(props) {
 
   return (
     <div className="login-box">
-      <h3>Login</h3>
-      <p>Name:</p>
-      <input type="text" size="30" maxLength="30" autoComplete="off" className="input login-name" id="login-name" ref={loginName}/>
-      <p>Password:</p>
-      <input type="password" size="30" maxLength="30" autoComplete="off" className="input login-password" id="login-password" ref={loginPassword}/>
-      <p id="login-failed-message">Login failed!</p>
-      <button
-        className="button login"
-        id="login-submit-button"
-        onClick={() => attemptLogin()}>
-        Login
-          </button>
+      {renderLoginBox()}
     </div>
   );
 }
@@ -126,6 +152,7 @@ function App() {
 
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [loginError, setLoginError] = React.useState(false);
+  const [userName, setUserName] = React.useState("");
   
   const loginName = React.useRef(null);
   const loginPassword = React.useRef(null);
@@ -136,7 +163,7 @@ function App() {
 
 
     if (loginNameValue.length < 1 || loginPasswordValue.length < 1) {
-      setLoginError(true);
+      attemptLogout();
     } else {
 
       const loginData = {
@@ -151,9 +178,9 @@ function App() {
         },
         body: JSON.stringify(loginData)
       };
+
       let responseStatus = 0;
       
-
       const response = await fetch(url, options)
       .then(res => {
         responseStatus = res.status;
@@ -162,14 +189,39 @@ function App() {
       .catch(err => console.log(err));
 
       if (responseStatus >= 200 && responseStatus < 300) {
-        setLoggedIn(true);
-        setLoginError(false);
+        try {
+          sessionStorage.setItem("tkn", response.jwt);
+          sessionStorage.setItem("uname", response.user.userName);
+          setUserName(response.user.username);
+          setLoggedIn(true);
+          setLoginError(false);
+        } catch(err) {
+          console.log(err);
+          attemptLogout();
+        }
       } else {
-        setLoggedIn(false);
-        setLoginError(true);
+        attemptLogout();
       }
     }
   }
+
+  function attemptLogout() {
+    sessionStorage.removeItem("tkn");
+    sessionStorage.removeItem("uname");
+    setUserName("");
+    setLoggedIn(false);
+    setLoginError(false);
+  }
+
+  React.useEffect(() => {
+    if (sessionStorage.getItem("tkn") !== null && sessionStorage.getItem("uname") !== null) {
+      setUserName(sessionStorage.getItem("uname"));
+      setLoggedIn(true);
+      setLoginError(false);
+    } else {
+      attemptLogout();
+    }
+  });
 
 
   return (
@@ -196,7 +248,14 @@ function App() {
             </div>
           </div>
           <div className="right-box">
-            <LoginBox loginError={loginError} attemptLogin={attemptLogin} loginFields={{loginName: loginName, loginPassword: loginPassword}}/>
+            <LoginBox 
+              loggedIn={loggedIn}
+              userName={userName}
+              loginError={loginError} 
+              attemptLogin={attemptLogin}
+              attemptLogout={attemptLogout}
+              loginFields={{loginName: loginName, loginPassword: loginPassword}}
+            />
             <div className="right-content-box">
               <h3>Right Box Content 1</h3>
               <p>placeholder content</p>
