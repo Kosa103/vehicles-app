@@ -1,6 +1,6 @@
 import './App.css';
 import React from "react";
-import { OptionsBarAuth, LoginBoxAuth } from "./AppAuthComponents";
+import { OptionsBarAuth, LoginBoxAuth, ContentAddVehicles } from "./AppAuthComponents";
 import { OptionsBarUnauth, LoginBoxUnauth } from "./AppUnauthComponents";
 
 
@@ -209,70 +209,6 @@ function ContentDisplaySearchResults(props) {
 }
 
 
-function ContentAddVehicles() {
-  return (
-    <div className="content-box form-box">
-      <div className="form-page">
-        <div className="form-subpage">
-          <FormField title="[A] Registration number:" />
-          <FormField title="[B] Date of first registration:" />
-          <FormField title="[D.1] Brand:" />
-          <FormField title="[D.2] Type:" />
-          <FormField title="[D.3] Model:" />
-          <FormField title="[P.1] Displacement:" />
-          <FormField title="[P.5] Engine code:" />
-        </div>
-        <div className="form-subpage">
-          <FormField title="[0] Eurotax code:" />
-          <FormField title="[P.2] Engine power:" />
-          <FormField title="[E] Chassis number:" />
-          <FormField title="[P.3] Fuel type:" />
-          <FormField title="[J] Vehicle category:" />
-        </div>
-      </div>
-      <div className="form-page">
-        <div className="form-subpage">
-          <FormField title="[G] Empty Weight:" />
-          <FormField title="[F.1] Maximum Weight:" />
-          <FormField title="[K] Type acknowledgement number:" />
-          <FormField title="[I] Date of first registration in hungary:" />
-          <FormField title="[00] Year of manufacturing:" />
-        </div>
-        <div className="form-subpage">
-          <FormField title="[R] Color:" />
-          <FormField title="[V.9] Environmental class:" />
-          <FormField title="[S.1] Number of seats:" />
-        </div>
-      </div>
-      <div className="form-page">
-        <div className="form-subpage">
-          <FormField title="[C.1.1] Last name or company name:" />
-          <FormField title="[C.1.2] First name:" />
-          <FormField title="[C.1.3] Address:" />
-          <FormField title="[C.1.4] Ownership type:" />
-        </div>
-        <div className="form-subpage">
-          <FormField title="[000] Comments:" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-
-function FormField(props) {
-  const title = props.title;
-  const id = title.split("] ")[1].toLowerCase().replace(" ", "-").replace(":", "");
-
-  return (
-    <div className="form-field">
-      <p>{title}</p>
-      <input type="text" size="40" maxLength="40" className="input form-field" id={`input-${id}`} />
-    </div>
-  );
-}
-
-
 function AppAuth(props) {
   const changeAuth = props.changeAuth;
 
@@ -295,6 +231,8 @@ function AppAuth(props) {
           <ContentDisplaySearchResults searchResults={searchResults} />
         </>
       );
+    } else if (displayedContent === "ContentAddVehicles") {
+      return <ContentAddVehicles />;
     }
   }
 
