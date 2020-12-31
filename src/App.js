@@ -11,10 +11,10 @@ function Backdrop(props) {
     if (type === "loading") {
       return (
         <div className="backdrop-text-container">
-          <p className="loading-indicator" ></p>
+          <div className="spinner-border text-dark"></div>
           <h2 className="backdrop-text">
             Loading...
-            </h2>
+          </h2>
         </div>
       );
     }
@@ -137,6 +137,24 @@ function ContentSearchVehicles(props) {
     return methodFields;
   }
 
+  function renderErrorMessage() {
+    if (!searchError && !searchError) {
+      return <></>;
+    }
+
+    let message = "";
+    if (searchError) {
+      message = " An error occured while executing the search request! Please try again";
+    } else if (searchErrorUser) {
+      message = " Incorrect input!";
+    }
+    return (
+      <div className="alert alert-danger">
+        <strong>Error!</strong>{message}
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="search-field-box">
@@ -153,6 +171,7 @@ function ContentSearchVehicles(props) {
         <input type="text" size="40" maxLength="40" className="input search-field" id="search-field-vehicle" ref={searchValueInput} />
         <button className="button search" id="search-button-vehicle" onClick={() => fetchSearchResults()}>SEARCH</button>
       </div>
+      {renderErrorMessage()}
     </div>
   );
 }
@@ -177,10 +196,14 @@ function ContentDisplaySearchResults(props) {
 
   function renderTable() {
     if (searchResults.length !== 0) {
+
       return (
-        <div class="container">
-          <div class="search-results-box">
-            <table class="table table-striped">
+        <div className="container">
+          <div class="alert alert-info">
+            <strong>Click an entry</strong> to display all data
+          </div>
+          <div className="search-results-box">
+            <table className="table table-striped">
               <thead>
                 <tr>
                   <th>Reg. number</th>
@@ -197,7 +220,13 @@ function ContentDisplaySearchResults(props) {
         </div>
       );
     } else {
-      return <></>;
+      return (
+      <div className="container">
+        <div className="alert alert-info">
+          No vehicles to display
+        </div>
+      </div>
+      );
     }
   }
 

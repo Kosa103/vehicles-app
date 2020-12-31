@@ -7,7 +7,7 @@ export function OptionsBarUnauth(props) {
     return (
         <div className="options-bar-box">
             <button className="button options-button" onClick={() => changeContent("ContentSearchVehicles")}>Search Vehicles</button>
-            <button className="button options-button inactive">Add Vehicles</button>
+            <button className="button options-button inactive" disabled>Add Vehicles</button>
         </div>
     );
 }
