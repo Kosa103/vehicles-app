@@ -6,31 +6,31 @@ export function ContentAddVehicles() {
         type: "text",
         size: "30",
         maxLength: "30",
-        className: "input input-text form-field"
+        className: "input input-text form-field",
     };
     const longFormField = {
         type: "text",
         size: "120",
         maxLength: "120",
-        className: "input input-long-text form-field"
+        className: "input input-long-text form-field",
     };
     const dateFormField = {
         type: "date",
         size: "10",
         maxLength: "10",
-        className: "input input-date form-field"
+        className: "input input-date form-field",
     };
     const numberFormField = {
         type: "number",
         size: "30",
         maxLength: "30",
-        className: "input input-number form-field"
+        className: "input input-number form-field",
     };
     const commentsFormField = {
         type: "text",
         size: "100000",
         maxLength: "100000",
-        className: "input input-comments form-field"
+        className: "input input-comments form-field",
     };
     const form = {
         registrationNumber: React.useRef(null),
@@ -112,18 +112,18 @@ export function ContentAddVehicles() {
             method: "POST",
             headers: {
                 'Content-type': 'application/json',
-                Authorization : `Bearer ${token}`
+                Authorization: `Bearer ${token}`
             },
             body: JSON.stringify(requestBody)
         };
         let responseStatus = 0;
 
-        const response = await fetch(url, options)
-        .then(res => {
-            responseStatus = res.status;
-            return res.json();
-        })
-        .catch(err => console.log(err));
+        await fetch(url, options)
+            .then(res => {
+                responseStatus = res.status;
+                return res.json();
+            })
+            .catch(err => console.log(err));
 
         if (responseStatus >= 200 && responseStatus < 300) {
             postAlert.current.textContent = "Successfully added vehicle";
@@ -141,46 +141,46 @@ export function ContentAddVehicles() {
             <p ref={postAlert}></p>
             <div className="form-page">
                 <div className="form-subpage">
-                    <FormField title="[A] Registration number*:" properties={defaultFormField} reference={form.registrationNumber}/>
-                    <FormField title="[B] Date of first registration*:" properties={dateFormField} reference={form.dateOfFirstRegistration}/>
-                    <FormField title="[D.1] Brand*:" properties={defaultFormField} reference={form.brand}/>
-                    <FormField title="[D.2] Type:" properties={defaultFormField} reference={form.type}/>
-                    <FormField title="[D.3] Model*:" properties={defaultFormField} reference={form.model}/>
-                    <FormField title="[P.1] Displacement*:" properties={numberFormField} reference={form.displacement}/>
-                    <FormField title="[P.5] Engine code*:" properties={defaultFormField} reference={form.engineCode}/>
+                    <FormField title="[A] Registration number*:" properties={defaultFormField} reference={form.registrationNumber} />
+                    <FormField title="[B] Date of first registration*:" properties={dateFormField} reference={form.dateOfFirstRegistration} />
+                    <FormField title="[D.1] Brand*:" properties={defaultFormField} reference={form.brand} />
+                    <FormField title="[D.2] Type:" properties={defaultFormField} reference={form.type} />
+                    <FormField title="[D.3] Model*:" properties={defaultFormField} reference={form.model} />
+                    <FormField title="[P.1] Displacement*:" properties={numberFormField} reference={form.displacement} />
+                    <FormField title="[P.5] Engine code*:" properties={defaultFormField} reference={form.engineCode} />
                 </div>
                 <div className="form-subpage">
-                    <FormField title="[0] Eurotax code:" properties={defaultFormField} reference={form.eurotaxCode}/>
-                    <FormField title="[P.2] Engine power*:" properties={numberFormField} reference={form.enginePower}/>
-                    <FormField title="[E] Chassis number*:" properties={defaultFormField} reference={form.chassisNumber}/>
-                    <FormField title="[P.3] Fuel type*:" properties={defaultFormField} reference={form.fuelType}/>
-                    <FormField title="[J] Vehicle category*:" properties={defaultFormField} reference={form.vehicleCategory}/>
-                </div>
-            </div>
-            <div className="form-page">
-                <div className="form-subpage">
-                    <FormField title="[G] Empty Weight:" properties={numberFormField} reference={form.emptyWeight}/>
-                    <FormField title="[F.1] Maximum Weight:" properties={numberFormField} reference={form.maximumWeight}/>
-                    <FormField title="[K] Type acknowledgement number:" properties={defaultFormField} reference={form.typeAcknowledgementNumber}/>
-                    <FormField title="[I] Date of first registration in hungary:" properties={dateFormField} reference={form.dateOfFirstRegistrationInHungary}/>
-                    <FormField title="[00] Year of manufacturing:" properties={numberFormField} reference={form.yearOfManufacturing}/>
-                </div>
-                <div className="form-subpage">
-                    <FormField title="[R] Color:" properties={defaultFormField} reference={form.color}/>
-                    <FormField title="[V.9] Environmental class:" properties={defaultFormField} reference={form.environmentalClass}/>
-                    <FormField title="[S.1] Number of seats:" properties={numberFormField} reference={form.numberOfSeats}/>
+                    <FormField title="[0] Eurotax code:" properties={defaultFormField} reference={form.eurotaxCode} />
+                    <FormField title="[P.2] Engine power*:" properties={numberFormField} reference={form.enginePower} />
+                    <FormField title="[E] Chassis number*:" properties={defaultFormField} reference={form.chassisNumber} />
+                    <FormField title="[P.3] Fuel type*:" properties={defaultFormField} reference={form.fuelType} />
+                    <FormField title="[J] Vehicle category*:" properties={defaultFormField} reference={form.vehicleCategory} />
                 </div>
             </div>
             <div className="form-page">
                 <div className="form-subpage">
-                    <FormField title="[C.1.1] Last name or company name:" properties={defaultFormField} reference={form.lastNameOrCompanyName}/>
-                    <FormField title="[C.1.2] First name:" properties={defaultFormField} reference={form.firstName}/>
-                    <FormField title="[C.1.3] Address:" properties={defaultFormField} reference={form.address}/>
-                    <FormField title="[C.1.4] Ownership type:" properties={defaultFormField} reference={form.ownershipType}/>
-                    <FormField title="[000] Exam valid until:" properties={dateFormField} reference={form.examValidUntil}/>
+                    <FormField title="[G] Empty Weight:" properties={numberFormField} reference={form.emptyWeight} />
+                    <FormField title="[F.1] Maximum Weight:" properties={numberFormField} reference={form.maximumWeight} />
+                    <FormField title="[K] Type acknowledgement number:" properties={defaultFormField} reference={form.typeAcknowledgementNumber} />
+                    <FormField title="[I] Date of first registration in hungary:" properties={dateFormField} reference={form.dateOfFirstRegistrationInHungary} />
+                    <FormField title="[00] Year of manufacturing:" properties={numberFormField} reference={form.yearOfManufacturing} />
                 </div>
                 <div className="form-subpage">
-                    <FormField title="[0000] Comments:" properties={commentsFormField} reference={form.comments}/>
+                    <FormField title="[R] Color:" properties={defaultFormField} reference={form.color} />
+                    <FormField title="[V.9] Environmental class:" properties={defaultFormField} reference={form.environmentalClass} />
+                    <FormField title="[S.1] Number of seats:" properties={numberFormField} reference={form.numberOfSeats} />
+                </div>
+            </div>
+            <div className="form-page">
+                <div className="form-subpage">
+                    <FormField title="[C.1.1] Last name or company name:" properties={longFormField} reference={form.lastNameOrCompanyName} />
+                    <FormField title="[C.1.2] First name:" properties={defaultFormField} reference={form.firstName} />
+                    <FormField title="[C.1.3] Address:" properties={longFormField} reference={form.address} />
+                    <FormField title="[C.1.4] Ownership type:" properties={defaultFormField} reference={form.ownershipType} />
+                    <FormField title="[000] Exam valid until:" properties={dateFormField} reference={form.examValidUntil} />
+                </div>
+                <div className="form-subpage">
+                    <FormField title="[0000] Comments:" properties={commentsFormField} reference={form.comments} />
                 </div>
             </div>
             <button className="button form-submit-button" onClick={() => attemptPostForm()}>Add vehicle</button>
@@ -189,17 +189,15 @@ export function ContentAddVehicles() {
 }
 
 
-function FormField(props) {
-    const title = props.title;
-    const {type, size, maxLength, className} = {...props.properties};
-    const reference = props.reference;
+function FormField({ title, properties, reference }) {
+    const { type, size, maxLength, className } = { ...properties };
 
     const id = title.split("] ")[1].toLowerCase().replace(" ", "-").replace(":", "").replace("*", "");
 
     return (
         <div className="form-field">
             <p>{title}</p>
-            <input type={type} size={size} maxLength={maxLength} className={className} id={`input-${id}`} ref={reference}/>
+            <input type={type} size={size} maxLength={maxLength} className={className} id={`input-${id}`} ref={reference} />
         </div>
     );
 }

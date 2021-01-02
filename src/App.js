@@ -1,7 +1,14 @@
-import './App.css';
 import React from "react";
+import {
+  BrowserRouter as Router,
+  Link,
+  Route,
+  Switch,
+} from 'react-router-dom';
+import './App.css';
 import { OptionsBarAuth, LoginBoxAuth, ContentAddVehicles } from "./AppAuthComponents";
 import { OptionsBarUnauth, LoginBoxUnauth } from "./AppUnauthComponents";
+import { ContentDetailsPage } from "./ContentDetailsPage";
 
 
 function Backdrop(props) {
@@ -72,7 +79,7 @@ function ContentSearchVehicles(props) {
   const searchMethodInput = React.useRef(null);
   const searchValueInput = React.useRef(null);
 
-  function transformStringForQuerying(string) {
+  function stringToCamelCase(string) {
     const splitString = string.split("] ")[1].split(" ");
     const splitResult = [];
     splitResult.push(splitString[0].charAt(0).toLowerCase() + splitString[0].slice(1));
@@ -80,11 +87,11 @@ function ContentSearchVehicles(props) {
     for (let i = 1; i < splitString.length; i++) {
       splitResult.push(splitString[i].charAt(0).toUpperCase() + splitString[i].slice(1));
     }
-    return splitResult.join("");
+    return splitResult.join("").replace("*", "").replace("*", "");
   }
 
   async function fetchSearchResults() {
-    const queryField = transformStringForQuerying(searchSelectorInput.current.value);
+    const queryField = stringToCamelCase(searchSelectorInput.current.value);
     const searchMethod = searchMethodsMap[searchMethodInput.current.value.toLowerCase()];
     const searchValue = searchValueInput.current.value;
     let responseStatus = 0;
@@ -184,10 +191,10 @@ function ContentDisplaySearchResults(props) {
     const row = searchResults.map(vehicle => {
       return (
         <tr key={vehicle.id}>
-          <th>{vehicle.registrationNumber}</th>
-          <th>{vehicle.brand}</th>
-          <th>{vehicle.model}</th>
-          <th>{vehicle.dateOfFirstRegistration}</th>
+          <td><Link to={`/vehicles/${vehicle.id}/details`}>{vehicle.registrationNumber}</Link></td>
+          <td>{vehicle.brand}</td>
+          <td>{vehicle.model}</td>
+          <td>{vehicle.dateOfFirstRegistration}</td>
         </tr>
       );
     });
@@ -199,7 +206,7 @@ function ContentDisplaySearchResults(props) {
 
       return (
         <div className="container">
-          <div class="alert alert-info">
+          <div className="alert alert-info">
             <strong>Click an entry</strong> to display all data
           </div>
           <div className="search-results-box">
@@ -240,14 +247,25 @@ function ContentDisplaySearchResults(props) {
 
 function AppAuth(props) {
   const changeAuth = props.changeAuth;
+  const changeBackdrop = props.changeBackdrop;
 
-  const [backdropProperties, setBackdropProperties] = React.useState({ visibility: "hidden", type: "loading" });
   const [displayedContent, setDisplayedContent] = React.useState("ContentWelcomePage");
   const [searchResults, setSearchResults] = React.useState([]);
+  const cachedResults = React.useRef([]);
 
-  function changeBackdrop(backdropData) {
-    const { visibility, type } = { ...backdropData };
-    setBackdropProperties({ visibility: visibility, type: type });
+  function updateResults(data) {
+    const newCachedResults = [...cachedResults.current];
+    const cachedItemsIds = [];
+    for (const item of newCachedResults) {
+      cachedItemsIds.push(item.id);
+    }
+    for (const item of data) {
+      if (!(cachedItemsIds.includes(item.id))) {
+        newCachedResults.push(item);
+      }
+    }
+    cachedResults.current = newCachedResults;
+    setSearchResults(data);
   }
 
   function renderContent() {
@@ -256,7 +274,7 @@ function AppAuth(props) {
     } else if (displayedContent === "ContentSearchVehicles") {
       return (
         <>
-          <ContentSearchVehicles updateResults={data => setSearchResults(data)} />
+          <ContentSearchVehicles updateResults={updateResults} />
           <ContentDisplaySearchResults searchResults={searchResults} />
         </>
       );
@@ -267,7 +285,6 @@ function AppAuth(props) {
 
   return (
     <>
-      <Backdrop backdropProperties={backdropProperties} />
       <div className=".container">
         <div className="app-main-box">
           <div className="title-box">
@@ -287,7 +304,10 @@ function AppAuth(props) {
             <div className="center-box">
               <OptionsBarAuth changeContent={content => setDisplayedContent(content)} />
               <div className="content-box">
-                {renderContent()}
+                <Switch>
+                  <Route path="/" exact strict render={() => renderContent()} />
+                  <Route path="/vehicles/:id/details" exact strict component={ContentDetailsPage} />
+                </Switch>
               </div>
             </div>
             <div className="right-box">
@@ -310,14 +330,25 @@ function AppAuth(props) {
 
 function AppUnauth(props) {
   const changeAuth = props.changeAuth;
+  const changeBackdrop = props.changeBackdrop;
 
-  const [backdropProperties, setBackdropProperties] = React.useState({ visibility: "hidden", type: "loading" });
   const [displayedContent, setDisplayedContent] = React.useState("ContentWelcomePage");
   const [searchResults, setSearchResults] = React.useState([]);
+  const cachedResults = React.useRef([]);
 
-  function changeBackdrop(backdropData) {
-    const { visibility, type } = { ...backdropData };
-    setBackdropProperties({ visibility: visibility, type: type });
+  function updateResults(data) {
+    const newCachedResults = [...cachedResults.current];
+    const cachedItemsIds = [];
+    for (const item of newCachedResults) {
+      cachedItemsIds.push(item.id);
+    }
+    for (const item of data) {
+      if (!(cachedItemsIds.includes(item.id))) {
+        newCachedResults.push(item);
+      }
+    }
+    cachedResults.current = newCachedResults;
+    setSearchResults(data);
   }
 
   function renderContent() {
@@ -326,7 +357,7 @@ function AppUnauth(props) {
     } else if (displayedContent === "ContentSearchVehicles") {
       return (
         <>
-          <ContentSearchVehicles updateResults={data => setSearchResults(data)} />
+          <ContentSearchVehicles updateResults={updateResults} />
           <ContentDisplaySearchResults searchResults={searchResults} />
         </>
       );
@@ -335,9 +366,6 @@ function AppUnauth(props) {
 
   return (
     <>
-      <Backdrop
-        backdropProperties={backdropProperties}
-      />
       <div className=".container">
         <div className="app-main-box">
           <div className="title-box">
@@ -357,7 +385,10 @@ function AppUnauth(props) {
             <div className="center-box">
               <OptionsBarUnauth changeContent={content => setDisplayedContent(content)} />
               <div className="content-box">
-                {renderContent()}
+                <Switch>
+                  <Route path="/" exact strict render={() => renderContent()} />
+                  <Route path="/vehicles/:id/details" exact strict component={ContentDetailsPage} />
+                </Switch>
               </div>
             </div>
             <div className="right-box">
@@ -379,20 +410,92 @@ function AppUnauth(props) {
 
 
 function App() {
+  const [loaded, setLoaded] = React.useState(false);
   const [authenticated, setAuthenticated] = React.useState(false);
+  const [backdropProperties, setBackdropProperties] = React.useState({ visibility: "hidden", type: "loading" });
+
+  function changeBackdrop(backdropData) {
+    const { visibility, type } = { ...backdropData };
+    setBackdropProperties({ visibility: visibility, type: type });
+  }
+
+  function renderApp() {
+    if (authenticated) {
+      return (
+        <AppAuth 
+          changeAuth={bool => setAuthenticated(bool)}
+          changeBackdrop={changeBackdrop}
+        />
+      );
+    } else {
+      return (
+        <AppUnauth 
+          changeAuth={bool => setAuthenticated(bool)}
+          changeBackdrop={changeBackdrop}
+        />
+      );
+    }
+  }
 
   React.useEffect(() => {
-    if (sessionStorage.getItem("res") !== null) {
-      const userData = JSON.parse(sessionStorage.getItem("res"));
-      if (userData.jwt !== null) {
-        setAuthenticated(true);
+    async function checkLoginValidity() {
+      if (sessionStorage.getItem("res") !== null) {
+          const userData = JSON.parse(sessionStorage.getItem("res"));
+          if (userData.jwt !== null) {
+              const token = JSON.parse(sessionStorage.getItem("res")).jwt;
+              const url = "http://borzalom.ddns.net:1000/vehicles";
+              const options = {
+                  method: "GET",
+                  headers: {
+                      'Content-type': 'application/json',
+                      Authorization: `Bearer ${token}`
+                  },
+              };
+              let responseStatus = 0;
+
+              await fetch(url, options)
+                  .then(res => {
+                      responseStatus = res.status;
+                      return res.json();
+                  })
+                  .catch(err => console.log(err));
+
+              if (responseStatus >= 200 && responseStatus < 300) {
+                  return true;
+              } else {
+                  console.log("Error code:");
+                  console.log(responseStatus);
+                  return false;
+              }
+          } else {
+              return false;
+          }
+      } else {
+          return false;
       }
-    }
+  }
+
+  async function init() {
+      const result = await checkLoginValidity();
+      setLoaded(true);
+      setAuthenticated(result || false);
+  }
+
+  init();
   }, []);
 
-  return (authenticated ?
-    <AppAuth changeAuth={bool => setAuthenticated(bool)} /> :
-    <AppUnauth changeAuth={bool => setAuthenticated(bool)} />);
+  if (!loaded) {
+    return <Backdrop backdropProperties={backdropProperties}/>
+  }
+
+  return (
+    <Router>
+      <Backdrop
+        backdropProperties={backdropProperties}
+      />
+      {renderApp()}
+    </Router>
+  );
 }
 
 
