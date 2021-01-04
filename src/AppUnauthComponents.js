@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from 'react-router-dom';
 
 
 export function OptionsBarUnauth(props) {
@@ -11,6 +12,18 @@ export function OptionsBarUnauth(props) {
         </div>
     );
 }
+
+
+export function OptionsBarPageUnauth() {
+    return (
+        <div className="options-bar-box">
+            <Link to="/" className="button options-button" >Home</Link>
+            <button className="button options-button" disabled>Modify Vehicle</button>
+            <button className="button options-button" disabled>Delete Vehicle</button>
+        </div>
+    );
+}
+
 
 
 export function LoginBoxUnauth(props) {

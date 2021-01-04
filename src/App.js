@@ -6,8 +6,9 @@ import {
   Switch,
 } from 'react-router-dom';
 import './App.css';
-import { OptionsBarAuth, LoginBoxAuth, ContentAddVehicles } from "./AppAuthComponents";
-import { OptionsBarUnauth, LoginBoxUnauth } from "./AppUnauthComponents";
+
+import { OptionsBarAuth, OptionsBarPageAuth, LoginBoxAuth, ContentAddVehicles } from "./AppAuthComponents";
+import { OptionsBarUnauth, OptionsBarPageUnauth, LoginBoxUnauth } from "./AppUnauthComponents";
 import { ContentDetailsPage } from "./ContentDetailsPage";
 
 
@@ -270,17 +271,45 @@ function AppAuth(props) {
 
   function renderContent() {
     if (displayedContent === "ContentWelcomePage") {
-      return <ContentWelcomePage />;
+      return (
+        <>
+          <OptionsBarAuth changeContent={content => setDisplayedContent(content)} />
+          <div className="content-box">
+            <ContentWelcomePage />
+          </div>
+        </>
+      );
     } else if (displayedContent === "ContentSearchVehicles") {
       return (
         <>
-          <ContentSearchVehicles updateResults={updateResults} />
-          <ContentDisplaySearchResults searchResults={searchResults} />
+          <OptionsBarAuth changeContent={content => setDisplayedContent(content)} />
+          <div className="content-box">
+            <ContentSearchVehicles updateResults={updateResults} />
+            <ContentDisplaySearchResults searchResults={searchResults} />
+          </div>
         </>
       );
     } else if (displayedContent === "ContentAddVehicles") {
-      return <ContentAddVehicles />;
+      return (
+        <>
+          <OptionsBarAuth changeContent={content => setDisplayedContent(content)} />
+          <div className="content-box">
+            <ContentAddVehicles />
+          </div>
+        </>
+      );
     }
+  }
+  
+  function renderPage() {
+    return(
+      <>
+        <OptionsBarPageAuth />
+        <div className="content-box">
+          <ContentDetailsPage cachedResults={cachedResults} />
+        </div>
+      </>
+    );
   }
 
   return (
@@ -302,13 +331,10 @@ function AppAuth(props) {
               </div>
             </div>
             <div className="center-box">
-              <OptionsBarAuth changeContent={content => setDisplayedContent(content)} />
-              <div className="content-box">
-                <Switch>
-                  <Route path="/" exact strict render={() => renderContent()} />
-                  <Route path="/vehicles/:id/details" exact strict component={ContentDetailsPage} />
-                </Switch>
-              </div>
+              <Switch>
+                <Route path="/" exact strict render={() => renderContent()} />
+                <Route path="/vehicles/:id/details" exact strict render={() => renderPage()} />
+              </Switch>
             </div>
             <div className="right-box">
               <LoginBoxAuth
@@ -353,15 +379,36 @@ function AppUnauth(props) {
 
   function renderContent() {
     if (displayedContent === "ContentWelcomePage") {
-      return <ContentWelcomePage />;
+      return (
+        <>
+          <OptionsBarUnauth changeContent={content => setDisplayedContent(content)} />
+          <div className="content-box">
+            <ContentWelcomePage />
+          </div>
+        </>
+      );
     } else if (displayedContent === "ContentSearchVehicles") {
       return (
         <>
-          <ContentSearchVehicles updateResults={updateResults} />
-          <ContentDisplaySearchResults searchResults={searchResults} />
+          <OptionsBarUnauth changeContent={content => setDisplayedContent(content)} />
+          <div className="content-box">
+            <ContentSearchVehicles updateResults={updateResults} />
+            <ContentDisplaySearchResults searchResults={searchResults} />
+          </div>
         </>
       );
     }
+  }
+
+  function renderPage() {
+    return(
+      <>
+        <OptionsBarPageUnauth />
+        <div className="content-box">
+          <ContentDetailsPage cachedResults={cachedResults} />
+        </div>
+      </>
+    );
   }
 
   return (
@@ -383,13 +430,10 @@ function AppUnauth(props) {
               </div>
             </div>
             <div className="center-box">
-              <OptionsBarUnauth changeContent={content => setDisplayedContent(content)} />
-              <div className="content-box">
-                <Switch>
-                  <Route path="/" exact strict render={() => renderContent()} />
-                  <Route path="/vehicles/:id/details" exact strict component={ContentDetailsPage} />
-                </Switch>
-              </div>
+              <Switch>
+                <Route path="/" exact strict render={() => renderContent()} />
+                <Route path="/vehicles/:id/details" exact strict render={() => renderPage()} />
+              </Switch>
             </div>
             <div className="right-box">
               <LoginBoxUnauth
@@ -443,7 +487,7 @@ function App() {
           const userData = JSON.parse(sessionStorage.getItem("res"));
           if (userData.jwt !== null) {
               const token = JSON.parse(sessionStorage.getItem("res")).jwt;
-              const url = "http://borzalom.ddns.net:1000/vehicles";
+              const url = "http://borzalom.ddns.net:1000/users/me";
               const options = {
                   method: "GET",
                   headers: {

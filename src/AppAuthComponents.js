@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from 'react-router-dom';
 
 
 export function ContentAddVehicles() {
@@ -191,13 +192,11 @@ export function ContentAddVehicles() {
 
 function FormField({ title, properties, reference }) {
     const { type, size, maxLength, className } = { ...properties };
-
-    const id = title.split("] ")[1].toLowerCase().replace(" ", "-").replace(":", "").replace("*", "");
-
+    
     return (
         <div className="form-field">
             <p>{title}</p>
-            <input type={type} size={size} maxLength={maxLength} className={className} id={`input-${id}`} ref={reference} />
+            <input type={type} size={size} maxLength={maxLength} className={className} ref={reference} />
         </div>
     );
 }
@@ -205,11 +204,21 @@ function FormField({ title, properties, reference }) {
 
 export function OptionsBarAuth(props) {
     const changeContent = props.changeContent;
-
     return (
         <div className="options-bar-box">
             <button className="button options-button" onClick={() => changeContent("ContentSearchVehicles")}>Search Vehicles</button>
             <button className="button options-button inactive" onClick={() => changeContent("ContentAddVehicles")}>Add Vehicles</button>
+        </div>
+    );
+}
+
+
+export function OptionsBarPageAuth() {
+    return (
+        <div className="options-bar-box">
+            <Link to="/" className="button options-button" >Home</Link>
+            <button className="button options-button" >Modify Vehicle</button>
+            <button className="button options-button" >Delete Vehicle</button>
         </div>
     );
 }
