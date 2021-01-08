@@ -1,5 +1,23 @@
 import React from "react";
 import { Link } from 'react-router-dom';
+import { useParams } from "react-router-dom";
+
+import { SearchVehicles, DisplaySearchResults } from "./CommonComponents";
+
+
+export function ContentWelcomePageAuth() {
+    return (
+        <>
+          <OptionsBarAuth />
+          <div className="content-box">
+            <div className="content-box welcome-page">
+                <h3>Welcome to Online Vehicle Database!</h3>
+                <p>Dear visitor! You can search for vehicles by fields in the vehicle's registration book. Please log in to add, modify or delete existing vehicles! Signing up is restricted for security reasons. Contact us for more information.</p>
+            </div>
+          </div>
+        </>
+    );
+}
 
 
 export function ContentAddVehicles() {
@@ -136,63 +154,68 @@ export function ContentAddVehicles() {
     }
 
     return (
-        <div className="content-box form-box">
-            <h2>Add new vehicle:</h2>
-            <p>Fields marked with an asterisk (*) are mandatory to fill!</p>
-            <p ref={postAlert}></p>
-            <div className="form-page">
-                <div className="form-subpage">
-                    <FormField title="[A] Registration number*:" properties={defaultFormField} reference={form.registrationNumber} />
-                    <FormField title="[B] Date of first registration*:" properties={dateFormField} reference={form.dateOfFirstRegistration} />
-                    <FormField title="[D.1] Brand*:" properties={defaultFormField} reference={form.brand} />
-                    <FormField title="[D.2] Type:" properties={defaultFormField} reference={form.type} />
-                    <FormField title="[D.3] Model*:" properties={defaultFormField} reference={form.model} />
-                    <FormField title="[P.1] Displacement*:" properties={numberFormField} reference={form.displacement} />
-                    <FormField title="[P.5] Engine code*:" properties={defaultFormField} reference={form.engineCode} />
+        <>
+          <OptionsBarAuth />
+          <div className="content-box">
+            <div className="content-box form-box">
+                <h2>Add new vehicle:</h2>
+                <p>Fields marked with an asterisk (*) are mandatory to fill!</p>
+                <p ref={postAlert}></p>
+                <div className="form-page">
+                    <div className="form-subpage">
+                        <FormField title="[A] Registration number*:" properties={defaultFormField} reference={form.registrationNumber} />
+                        <FormField title="[B] Date of first registration*:" properties={dateFormField} reference={form.dateOfFirstRegistration} />
+                        <FormField title="[D.1] Brand*:" properties={defaultFormField} reference={form.brand} />
+                        <FormField title="[D.2] Type:" properties={defaultFormField} reference={form.type} />
+                        <FormField title="[D.3] Model*:" properties={defaultFormField} reference={form.model} />
+                        <FormField title="[P.1] Displacement*:" properties={numberFormField} reference={form.displacement} />
+                        <FormField title="[P.5] Engine code*:" properties={defaultFormField} reference={form.engineCode} />
+                    </div>
+                    <div className="form-subpage">
+                        <FormField title="[0] Eurotax code:" properties={defaultFormField} reference={form.eurotaxCode} />
+                        <FormField title="[P.2] Engine power*:" properties={numberFormField} reference={form.enginePower} />
+                        <FormField title="[E] Chassis number*:" properties={defaultFormField} reference={form.chassisNumber} />
+                        <FormField title="[P.3] Fuel type*:" properties={defaultFormField} reference={form.fuelType} />
+                        <FormField title="[J] Vehicle category*:" properties={defaultFormField} reference={form.vehicleCategory} />
+                    </div>
                 </div>
-                <div className="form-subpage">
-                    <FormField title="[0] Eurotax code:" properties={defaultFormField} reference={form.eurotaxCode} />
-                    <FormField title="[P.2] Engine power*:" properties={numberFormField} reference={form.enginePower} />
-                    <FormField title="[E] Chassis number*:" properties={defaultFormField} reference={form.chassisNumber} />
-                    <FormField title="[P.3] Fuel type*:" properties={defaultFormField} reference={form.fuelType} />
-                    <FormField title="[J] Vehicle category*:" properties={defaultFormField} reference={form.vehicleCategory} />
+                <div className="form-page">
+                    <div className="form-subpage">
+                        <FormField title="[G] Empty Weight:" properties={numberFormField} reference={form.emptyWeight} />
+                        <FormField title="[F.1] Maximum Weight:" properties={numberFormField} reference={form.maximumWeight} />
+                        <FormField title="[K] Type acknowledgement number:" properties={defaultFormField} reference={form.typeAcknowledgementNumber} />
+                        <FormField title="[I] Date of first registration in hungary:" properties={dateFormField} reference={form.dateOfFirstRegistrationInHungary} />
+                        <FormField title="[00] Year of manufacturing:" properties={numberFormField} reference={form.yearOfManufacturing} />
+                    </div>
+                    <div className="form-subpage">
+                        <FormField title="[R] Color:" properties={defaultFormField} reference={form.color} />
+                        <FormField title="[V.9] Environmental class:" properties={defaultFormField} reference={form.environmentalClass} />
+                        <FormField title="[S.1] Number of seats:" properties={numberFormField} reference={form.numberOfSeats} />
+                    </div>
                 </div>
+                <div className="form-page">
+                    <div className="form-subpage">
+                        <FormField title="[C.1.1] Last name or company name:" properties={longFormField} reference={form.lastNameOrCompanyName} />
+                        <FormField title="[C.1.2] First name:" properties={defaultFormField} reference={form.firstName} />
+                        <FormField title="[C.1.3] Address:" properties={longFormField} reference={form.address} />
+                        <FormField title="[C.1.4] Ownership type:" properties={defaultFormField} reference={form.ownershipType} />
+                        <FormField title="[000] Exam valid until:" properties={dateFormField} reference={form.examValidUntil} />
+                    </div>
+                    <div className="form-subpage">
+                        <FormField title="[0000] Comments:" properties={commentsFormField} reference={form.comments} />
+                    </div>
+                </div>
+                <button className="button form-submit-button" onClick={() => attemptPostForm()}>Add vehicle</button>
             </div>
-            <div className="form-page">
-                <div className="form-subpage">
-                    <FormField title="[G] Empty Weight:" properties={numberFormField} reference={form.emptyWeight} />
-                    <FormField title="[F.1] Maximum Weight:" properties={numberFormField} reference={form.maximumWeight} />
-                    <FormField title="[K] Type acknowledgement number:" properties={defaultFormField} reference={form.typeAcknowledgementNumber} />
-                    <FormField title="[I] Date of first registration in hungary:" properties={dateFormField} reference={form.dateOfFirstRegistrationInHungary} />
-                    <FormField title="[00] Year of manufacturing:" properties={numberFormField} reference={form.yearOfManufacturing} />
-                </div>
-                <div className="form-subpage">
-                    <FormField title="[R] Color:" properties={defaultFormField} reference={form.color} />
-                    <FormField title="[V.9] Environmental class:" properties={defaultFormField} reference={form.environmentalClass} />
-                    <FormField title="[S.1] Number of seats:" properties={numberFormField} reference={form.numberOfSeats} />
-                </div>
-            </div>
-            <div className="form-page">
-                <div className="form-subpage">
-                    <FormField title="[C.1.1] Last name or company name:" properties={longFormField} reference={form.lastNameOrCompanyName} />
-                    <FormField title="[C.1.2] First name:" properties={defaultFormField} reference={form.firstName} />
-                    <FormField title="[C.1.3] Address:" properties={longFormField} reference={form.address} />
-                    <FormField title="[C.1.4] Ownership type:" properties={defaultFormField} reference={form.ownershipType} />
-                    <FormField title="[000] Exam valid until:" properties={dateFormField} reference={form.examValidUntil} />
-                </div>
-                <div className="form-subpage">
-                    <FormField title="[0000] Comments:" properties={commentsFormField} reference={form.comments} />
-                </div>
-            </div>
-            <button className="button form-submit-button" onClick={() => attemptPostForm()}>Add vehicle</button>
-        </div>
+          </div>
+        </>
     );
 }
 
 
 function FormField({ title, properties, reference }) {
     const { type, size, maxLength, className } = { ...properties };
-    
+
     return (
         <div className="form-field">
             <p>{title}</p>
@@ -202,18 +225,156 @@ function FormField({ title, properties, reference }) {
 }
 
 
-export function OptionsBarAuth(props) {
-    const changeContent = props.changeContent;
+export function ContentSearchPageAuth({ updateResults, searchResults }) {
     return (
-        <div className="options-bar-box">
-            <button className="button options-button" onClick={() => changeContent("ContentSearchVehicles")}>Search Vehicles</button>
-            <button className="button options-button inactive" onClick={() => changeContent("ContentAddVehicles")}>Add Vehicles</button>
+        <>
+            <OptionsBarAuth />
+            <div className="content-box">
+                <SearchVehicles updateResults={updateResults} />
+                <DisplaySearchResults searchResults={searchResults} />
+            </div>
+        </>
+    );
+}
+
+
+export function ContentDetailsPageAuth() {
+    const { id } = useParams();
+    const permissionAlert = React.useRef(null);
+    const form = {
+        registrationNumber: React.useRef(null),
+        dateOfFirstRegistration: React.useRef(null),
+        brand: React.useRef(null),
+        type: React.useRef(null),
+        model: React.useRef(null),
+        displacement: React.useRef(null),
+        engineCode: React.useRef(null),
+        eurotaxCode: React.useRef(null),
+        enginePower: React.useRef(null),
+        chassisNumber: React.useRef(null),
+        fuelType: React.useRef(null),
+        vehicleCategory: React.useRef(null),
+        emptyWeight: React.useRef(null),
+        maximumWeight: React.useRef(null),
+        typeAcknowledgementNumber: React.useRef(null),
+        dateOfFirstRegistrationInHungary: React.useRef(null),
+        yearOfManufacturing: React.useRef(null),
+        color: React.useRef(null),
+        environmentalClass: React.useRef(null),
+        numberOfSeats: React.useRef(null),
+        lastNameOrCompanyName: React.useRef(null),
+        firstName: React.useRef(null),
+        address: React.useRef(null),
+        ownershipType: React.useRef(null),
+        examValidUntil: React.useRef(null),
+        comments: React.useRef(null),
+    };
+    const cachedSearchResults = sessionStorage.getItem("cachedSearchResults") ? JSON.parse(sessionStorage.getItem("cachedSearchResults")) : [];
+
+    let values = {};
+    let displayedValues = {};
+    for (const entry of cachedSearchResults) {
+        if (entry.id === Number(id)) {
+            values = entry;
+        }
+    }
+    for (const property of Object.keys(values)) {
+        if (values[property] === null) {
+            displayedValues[property] = "";
+        } else {
+            displayedValues[property] = values[property];
+        }
+    }
+
+    return (
+        <>
+            <OptionsBarPageAuth />
+            <div className="content-box">
+                <div className="content-box form-box">
+                    <h2>Vehicle details</h2>
+                    <p ref={permissionAlert}></p>
+                    <div className="form-page">
+                        <div className="form-subpage">
+                            <DetailsFormField title="[A] Registration number*:" value={displayedValues.registrationNumber} reference={form.registrationNumber} />
+                            <DetailsFormField title="[B] Date of first registration*:" value={displayedValues.dateOfFirstRegistration} reference={form.dateOfFirstRegistration} />
+                            <DetailsFormField title="[D.1] Brand*:" value={displayedValues.brand} reference={form.brand} />
+                            <DetailsFormField title="[D.2] Type:" value={displayedValues.type} reference={form.type} />
+                            <DetailsFormField title="[D.3] Model*:" value={displayedValues.model} reference={form.model} />
+                            <DetailsFormField title="[P.1] Displacement*:" value={displayedValues.displacement} reference={form.displacement} />
+                            <DetailsFormField title="[P.5] Engine code*:" value={displayedValues.engineCode} reference={form.engineCode} />
+                        </div>
+                        <div className="form-subpage">
+                            <DetailsFormField title="[0] Eurotax code:" value={displayedValues.eurotaxCode} reference={form.eurotaxCode} />
+                            <DetailsFormField title="[P.2] Engine power*:" value={displayedValues.enginePower} reference={form.enginePower} />
+                            <DetailsFormField title="[E] Chassis number*:" value={displayedValues.chassisNumber} reference={form.chassisNumber} />
+                            <DetailsFormField title="[P.3] Fuel type*:" value={displayedValues.fuelType} reference={form.fuelType} />
+                            <DetailsFormField title="[J] Vehicle category*:" value={displayedValues.vehicleCategory} reference={form.vehicleCategory} />
+                        </div>
+                    </div>
+                    <div className="form-page">
+                        <div className="form-subpage">
+                            <DetailsFormField title="[G] Empty Weight:" value={displayedValues.emptyWeight} reference={form.emptyWeight} />
+                            <DetailsFormField title="[F.1] Maximum Weight:" value={displayedValues.maximumWeight} reference={form.maximumWeight} />
+                            <DetailsFormField title="[K] Type acknowledgement number:" value={displayedValues.typeAcknowledgementNumber} reference={form.typeAcknowledgementNumber} />
+                            <DetailsFormField title="[I] Date of first registration in hungary:" value={displayedValues.dateOfFirstRegistrationInHungary} reference={form.dateOfFirstRegistrationInHungary} />
+                            <DetailsFormField title="[00] Year of manufacturing:" value={displayedValues.yearOfManufacturing} reference={form.yearOfManufacturing} />
+                        </div>
+                        <div className="form-subpage">
+                            <DetailsFormField title="[R] Color:" value={displayedValues.color} reference={form.color} />
+                            <DetailsFormField title="[V.9] Environmental class:" value={displayedValues.environmentalClass} reference={form.environmentalClass} />
+                            <DetailsFormField title="[S.1] Number of seats:" value={displayedValues.numberOfSeats} reference={form.numberOfSeats} />
+                        </div>
+                    </div>
+                    <div className="form-page">
+                        <div className="form-subpage">
+                            <DetailsFormField title="[C.1.1] Last name or company name:" value={displayedValues.lastNameOrCompanyName} reference={form.lastNameOrCompanyName} />
+                            <DetailsFormField title="[C.1.2] First name:" value={displayedValues.firstName} reference={form.firstName} />
+                            <DetailsFormField title="[C.1.3] Address:" value={displayedValues.address} reference={form.address} />
+                            <DetailsFormField title="[C.1.4] Ownership type:" value={displayedValues.ownershipType} reference={form.ownershipType} />
+                            <DetailsFormField title="[000] Exam valid until:" value={displayedValues.examValidUntil} reference={form.examValidUntil} />
+                        </div>
+                        <div className="form-subpage">
+                            <DetailsFormField title="[0000] Comments:" value={displayedValues.comments} reference={form.comments} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </>
+    );
+}
+
+
+function DetailsFormField({ title, reference, value }) {
+    let className;
+
+    if (title === "[0000] Comments:") {
+        className = "input input-comments form-field";
+    } else {
+        className = "input input-text form-field";
+    }
+
+    return (
+        <div className="form-field">
+            <p>{title}</p>
+            <input type="text" className={className} ref={reference} value={value} disabled />
         </div>
     );
 }
 
 
-export function OptionsBarPageAuth() {
+
+function OptionsBarAuth() {
+    return (
+        <div className="options-bar-box">
+            <Link to="/" className="button options-button">Home</Link>
+            <Link to="/vehicles/search" className="button options-button">Search Vehicles</Link>
+            <Link to="/vehicles/add" className="button options-button">Add Vehicles</Link>
+        </div>
+    );
+}
+
+
+function OptionsBarPageAuth() {
     return (
         <div className="options-bar-box">
             <Link to="/" className="button options-button" >Home</Link>
