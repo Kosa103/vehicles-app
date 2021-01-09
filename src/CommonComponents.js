@@ -2,26 +2,63 @@ import React from "react";
 import { Link } from 'react-router-dom';
 
 
-export function Backdrop(props) {
-    const { visibility, type } = props.backdropProperties;
+export function Modal({ modalProperties, modalEffect }) {
+    const { visibility, type } = {...modalProperties};
 
-    function renderBackdropTextbox() {
+    function renderModalTextbox() {
         if (type === "loading") {
             return (
-                <div className="backdrop-text-container">
+                <div className="modal-text-container">
                     <div className="spinner-border text-dark"></div>
-                    <h2 className="backdrop-text">
+                    <h2 className="modal-text-loading">
                         Loading...
-            </h2>
+                    </h2>
+                </div>
+            );
+        } else if (type === "deleteWarning") {
+            return (
+                <div className="modal-text-container">
+                    <h2 className="modal-text">
+                        Are you sure you want to delete this vehicle?
+                    </h2>
+                    <br />
+                    <div className="modal-buttons-container">
+                        <button className="button modal-button" onClick={() => modalEffect({delete: true})}>Yes</button>
+                        <button className="button modal-button" onClick={() => modalEffect({delete: false})}>No</button>
+                    </div>
+                </div>
+            );
+        } else if (type === "deleteSuccess") {
+            return (
+                <div className="modal-text-container">
+                    <h2 className="modal-text">
+                        Successfully deleted vehicle!
+                    </h2>
+                    <br />
+                    <div className="modal-buttons-container">
+                        <button className="button modal-button" onClick={() => modalEffect({confirm: true})}>OK</button>
+                    </div>
+                </div>
+            );
+        } else if (type === "deleteError") {
+            return (
+                <div className="modal-text-container">
+                    <h2 className="modal-text">
+                        Error deleting vehicle!
+                    </h2>
+                    <br />
+                    <div className="modal-buttons-container">
+                        <button className="button modal-button" onClick={() => modalEffect({confirm: true})}>OK</button>
+                    </div>
                 </div>
             );
         }
     }
 
     return (
-        <div className={`backdrop-background-${visibility}`}>
-            <div className="backdrop-textbox">
-                {renderBackdropTextbox()}
+        <div className={`modal-background-${visibility}`}>
+            <div className="modal-textbox">
+                {renderModalTextbox()}
             </div>
         </div>
     );

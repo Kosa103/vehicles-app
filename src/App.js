@@ -6,12 +6,12 @@ import {
 } from 'react-router-dom';
 import './App.css';
 
-import { Backdrop } from "./CommonComponents";
+import { Modal } from "./CommonComponents";
 import { ContentWelcomePageAuth, ContentDetailsPageAuth, LoginBoxAuth, ContentSearchPageAuth, ContentAddVehicles } from "./AppAuthComponents";
 import { ContentWelcomePageUnauth, ContentDetailsPageUnauth, LoginBoxUnauth, ContentSearchPageUnauth } from "./AppUnauthComponents";
 
 
-function AppAuth({ changeAuth, changeBackdrop }) {
+function AppAuth({ changeAuth, changeModal }) {
   const [searchResults, setSearchResults] = React.useState([]);
   const cachedResults = React.useRef([]);
 
@@ -63,7 +63,7 @@ function AppAuth({ changeAuth, changeBackdrop }) {
           <div className="right-box">
             <LoginBoxAuth
               changeAuth={changeAuth}
-              changeBackdrop={changeBackdrop}
+              changeModal={changeModal}
             />
             <div className="right-content-box">
               <h3>Right Box Content 1</h3>
@@ -77,7 +77,7 @@ function AppAuth({ changeAuth, changeBackdrop }) {
 }
 
 
-function AppUnauth({ changeAuth, changeBackdrop }) {
+function AppUnauth({ changeAuth, changeModal }) {
   const [searchResults, setSearchResults] = React.useState([]);
   const cachedResults = React.useRef([]);
 
@@ -128,7 +128,7 @@ function AppUnauth({ changeAuth, changeBackdrop }) {
           <div className="right-box">
             <LoginBoxUnauth
               changeAuth={changeAuth}
-              changeBackdrop={changeBackdrop}
+              changeModal={changeModal}
             />
             <div className="right-content-box">
               <h3>Right Box Content 1</h3>
@@ -145,11 +145,11 @@ function AppUnauth({ changeAuth, changeBackdrop }) {
 function App() {
   const [loaded, setLoaded] = React.useState(false);
   const [authenticated, setAuthenticated] = React.useState(false);
-  const [backdropProperties, setBackdropProperties] = React.useState({ visibility: "hidden", type: "loading" });
+  const [modalProperties, setModalProperties] = React.useState({ visibility: "hidden", type: "loading" });
 
-  function changeBackdrop(backdropData) {
-    const { visibility, type } = { ...backdropData };
-    setBackdropProperties({ visibility: visibility, type: type });
+  function changeModal(modalData) {
+    const { visibility, type } = { ...modalData };
+    setModalProperties({ visibility: visibility, type: type });
   }
 
   function renderApp() {
@@ -157,14 +157,14 @@ function App() {
       return (
         <AppAuth 
           changeAuth={bool => setAuthenticated(bool)}
-          changeBackdrop={changeBackdrop}
+          changeModal={changeModal}
         />
       );
     } else {
       return (
         <AppUnauth 
           changeAuth={bool => setAuthenticated(bool)}
-          changeBackdrop={changeBackdrop}
+          changeModal={changeModal}
         />
       );
     }
@@ -218,14 +218,12 @@ function App() {
   }, []);
 
   if (!loaded) {
-    return <Backdrop backdropProperties={backdropProperties}/>
+    return <Modal modalProperties={modalProperties} modalEffect={null}/>
   }
 
   return (
     <Router>
-      <Backdrop
-        backdropProperties={backdropProperties}
-      />
+      <Modal modalProperties={modalProperties} modalEffect={null}/>
       {renderApp()}
     </Router>
   );

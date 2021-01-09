@@ -181,19 +181,16 @@ function OptionsBarPageUnauth() {
 
 
 
-export function LoginBoxUnauth(props) {
-    const changeAuth = props.changeAuth;
-    const changeBackdrop = props.changeBackdrop;
-
+export function LoginBoxUnauth({ changeAuth, changeModal }) {
     const [loginError, setLoginError] = React.useState(false);
 
     const loginEmail = React.useRef(null);
     const loginPassword = React.useRef(null);
 
     async function initLogin() {
-        changeBackdrop({ visibility: "visible", type: "loading" });
+        changeModal({ visibility: "visible", type: "loading" });
         await attemptLogin();
-        changeBackdrop({ visibility: "hidden", type: "loading" });
+        changeModal({ visibility: "hidden", type: "loading" });
     }
 
     async function attemptLogin() {
