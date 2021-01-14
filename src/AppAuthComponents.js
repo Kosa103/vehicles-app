@@ -21,6 +21,8 @@ export function ContentWelcomePageAuth() {
 
 
 export function ContentAddVehicles() {
+    const { id } = useParams();
+
     const defaultFormField = {
         type: "text",
         size: "30",
@@ -83,7 +85,16 @@ export function ContentAddVehicles() {
 
     function sanitizeInput(input) {
         const stringInput = input.toString();
-        return stringInput.replace("(", "").replace(")", "").replace("{", "").replace("}", "").replace("*", "").replace(";", "").replace("%", "").toUpperCase();
+        return stringInput.replace("(", "")
+                .replace(")", "")
+                .replace("{", "")
+                .replace("}", "")
+                .replace("*", "")
+                .replace(";", "")
+                .replace("%", "")
+                .replace("?", "")
+                .replace("!", "")
+                .toUpperCase();
     }
 
     function removeDash(input) {
@@ -126,9 +137,11 @@ export function ContentAddVehicles() {
             }
         }
         const token = JSON.parse(sessionStorage.getItem("res")).jwt;
-        const url = "http://borzalom.ddns.net:1000/vehicles";
+        const url = (!!id) ? 
+        `http://borzalom.ddns.net:1000/vehicles/${id}` :
+        "http://borzalom.ddns.net:1000/vehicles";
         const options = {
-            method: "POST",
+            method: (!!id) ? "PUT" : "POST",
             headers: {
                 'Content-type': 'application/json',
                 Authorization: `Bearer ${token}`
@@ -145,13 +158,33 @@ export function ContentAddVehicles() {
             .catch(err => console.log(err));
 
         if (responseStatus >= 200 && responseStatus < 300) {
-            postAlert.current.textContent = "Successfully added vehicle";
+            postAlert.current.textContent = (!!id) ? "Successfully modified vehicle" : "Successfully added vehicle";
         } else {
-            postAlert.current.textContent = "Error adding vehicle!"
+            postAlert.current.textContent = (!!id) ? "Error modifying vehicle" : "Error adding vehicle!"
             console.log("Error code:");
             console.log(responseStatus);
         }
     }
+
+    React.useEffect(() => {
+        if (sessionStorage.getItem("cachedSearchResults") !== null && (!!id)) {
+            let vehicle;
+            for (const entry of JSON.parse(sessionStorage.getItem("cachedSearchResults"))) {
+                if (entry.id === Number(id)) {
+                    vehicle = entry;
+                }
+            }
+            for (const field of Object.keys(vehicle)) {
+                if (field !== "id" && field !== "published_at" && field !== "created_at" && field !== "updated_at") {
+                    if (vehicle[field] === null) {
+                        form[field].current.value = "";
+                    } else {
+                      form[field].current.value = vehicle[field];
+                    }
+                }
+            }
+        }
+    });
 
     return (
         <>
@@ -205,7 +238,7 @@ export function ContentAddVehicles() {
                             <FormField title="[0000] Comments:" properties={commentsFormField} reference={form.comments} />
                         </div>
                     </div>
-                    <button className="button form-submit-button" onClick={() => attemptPostForm()}>Add vehicle</button>
+                    <button className="button form-submit-button" onClick={() => attemptPostForm()}>{(!!id) ? "Modify vehicle" : "Add vehicle"}</button>
                 </div>
             </div>
         </>
@@ -422,7 +455,7 @@ function OptionsBarPageAuth({ vehicleId }) {
             <Modal modalProperties={modalProperties} modalEffect={modalEffect}/>
             <div className="options-bar-box">
                 <Link to="/" className="button options-button" >Home</Link>
-                <button className="button options-button" >Modify Vehicle</button>
+                <Link to={`/vehicles/${vehicleId}/modify`} className="button options-button" >Modify Vehicle</Link>
                 <button className="button options-button" onClick={() => setModalProperties({ visibility: "visible", type: "deleteWarning" })}>Delete Vehicle</button>
             </div>
         </>

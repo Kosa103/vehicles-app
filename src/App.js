@@ -27,13 +27,13 @@ function AppAuth({ changeAuth, changeModal }) {
       }
     }
     cachedResults.current = newCachedResults;
+    sessionStorage.setItem("cachedSearchResults", JSON.stringify(newCachedResults));
     setSearchResults(data);
   }
 
   function renderSearchPageAuth() {
     return <ContentSearchPageAuth searchResults={searchResults} updateResults={updateResults} />;
   }
-
   
   return (
     <div className=".container">
@@ -57,6 +57,7 @@ function AppAuth({ changeAuth, changeModal }) {
               <Route path="/" exact strict component={ContentWelcomePageAuth} />
               <Route path="/vehicles/search" exact strict render={() => renderSearchPageAuth()} />
               <Route path="/vehicles/add" exact strict component={ContentAddVehicles} />
+              <Route path="/vehicles/:id/modify" exact strict component={ContentAddVehicles} />
               <Route path="/vehicles/:id/details" exact strict component={ContentDetailsPageAuth} />
             </Switch>
           </div>

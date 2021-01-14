@@ -102,49 +102,49 @@ div {
     flex-direction: column;
 }
 
-    .title-box {
-        text-align: center;
-    }
+.title-box {
+    text-align: center;
+}
 
-    .main-box {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-    }
+.main-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
 
-        .left-box {
-          display: flex;
-          flex-direction: column;
-          width: 13%;
-        }
+.left-box {
+    display: flex;
+    flex-direction: column;
+    width: 13%;
+}
 
-        .center-box {
-            display: flex;
-            flex-direction: column;
-            width: 65%;
-        }
+.center-box {
+    display: flex;
+    flex-direction: column;
+    width: 65%;
+}
 
-            .options-bar-box {
-                display: flex;
-                flex-direction: row;
-                justify-content: space-around;
-            }
+.options-bar-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
 
-        .right-box {
-            display: flex;
-            flex-direction: column;
-            width: 13%;
-        }
+.right-box {
+    display: flex;
+    flex-direction: column;
+    width: 13%;
+}
 
-            .login-box {
-                display: flex;
-                flex-direction: column;
-            }
+.login-box {
+    display: flex;
+    flex-direction: column;
+}
 
-                #login-failed-message {
-                    color: red;
-                    background-color: rgba(255, 122, 122, 0.5);
-                    font-weight: bold;
-                    text-align: center;
-                    visibility: hidden;
-                }
+#login-failed-message {
+    color: red;
+    background-color: rgba(255, 122, 122, 0.5);
+    font-weight: bold;
+    text-align: center;
+    visibility: hidden;
+}
