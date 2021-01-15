@@ -7,11 +7,11 @@ import {
 import './App.css';
 
 import { Modal } from "./CommonComponents";
-import { ContentWelcomePageAuth, ContentDetailsPageAuth, LoginBoxAuth, ContentSearchPageAuth, ContentAddVehicles } from "./AppAuthComponents";
-import { ContentWelcomePageUnauth, ContentDetailsPageUnauth, LoginBoxUnauth, ContentSearchPageUnauth } from "./AppUnauthComponents";
+import { ContentWelcomePageAuth, ContentDetailsPageAuth, ContentSearchPageAuth, ContentAddVehicles } from "./AppAuthComponents";
+import { ContentWelcomePageUnauth, ContentDetailsPageUnauth, ContentSearchPageUnauth } from "./AppUnauthComponents";
 
 
-function AppAuth({ changeAuth, changeModal }) {
+function AppAuth({ changeAuth }) {
   const [searchResults, setSearchResults] = React.useState([]);
   const cachedResults = React.useRef([]);
 
@@ -31,54 +31,38 @@ function AppAuth({ changeAuth, changeModal }) {
     setSearchResults(data);
   }
 
-  function renderSearchPageAuth() {
-    return <ContentSearchPageAuth searchResults={searchResults} updateResults={updateResults} />;
-  }
-  
   return (
-    <div className=".container">
-      <div className="app-main-box">
-        <div className="title-box">
-          <h1 className="main-title">Online Vehicle Database</h1>
-        </div>
-        <div className="main-box">
-          <div className="left-box">
-            <div className="left-content-box">
-              <h3>Left Box Content 1</h3>
-              <p>placeholder content</p>
-            </div>
-            <div className="left-content-box">
-              <h3>Left Box Content 2</h3>
-              <p>placeholder content</p>
-            </div>
+      <div className=".container">
+        <div className="app-main-box">
+          <div className="title-box">
+            <h1 className="main-title">Online Vehicle Database</h1>
           </div>
-          <div className="center-box">
+          <div className="main-box">
+            <div className="left-box">
+              <div className="left-content-box">
+                <h3>Left Box Content 1</h3>
+                <p>placeholder content</p>
+              </div>
+              <div className="left-content-box">
+                <h3>Left Box Content 2</h3>
+                <p>placeholder content</p>
+              </div>
+            </div>
             <Switch>
-              <Route path="/" exact strict component={ContentWelcomePageAuth} />
-              <Route path="/vehicles/search" exact strict render={() => renderSearchPageAuth()} />
-              <Route path="/vehicles/add" exact strict component={ContentAddVehicles} />
-              <Route path="/vehicles/:id/modify" exact strict component={ContentAddVehicles} />
-              <Route path="/vehicles/:id/details" exact strict component={ContentDetailsPageAuth} />
+              <Route path="/" exact strict render={() => <ContentWelcomePageAuth changeAuth={changeAuth} />} />
+              <Route path="/vehicles/search" exact strict render={() => <ContentSearchPageAuth searchResults={searchResults} updateResults={updateResults} changeAuth={changeAuth}/>} />
+              <Route path="/vehicles/add" exact strict render={() => <ContentAddVehicles changeAuth={changeAuth}/>} />
+              <Route path="/vehicles/:id/modify" exact strict render={() => <ContentAddVehicles changeAuth={changeAuth}/>} />
+              <Route path="/vehicles/:id/details" exact strict render={() => <ContentDetailsPageAuth changeAuth={changeAuth} />} />
             </Switch>
-          </div>
-          <div className="right-box">
-            <LoginBoxAuth
-              changeAuth={changeAuth}
-              changeModal={changeModal}
-            />
-            <div className="right-content-box">
-              <h3>Right Box Content 1</h3>
-              <p>placeholder content</p>
-            </div>
           </div>
         </div>
       </div>
-    </div>
   );
 }
 
 
-function AppUnauth({ changeAuth, changeModal }) {
+function AppUnauth({ changeAuth }) {
   const [searchResults, setSearchResults] = React.useState([]);
   const cachedResults = React.useRef([]);
 
@@ -98,10 +82,6 @@ function AppUnauth({ changeAuth, changeModal }) {
     setSearchResults(data);
   }
 
-  function renderSearchPageUnauth() {
-    return <ContentSearchPageUnauth searchResults={searchResults} updateResults={updateResults} />;
-  }
-
   return (
     <div className=".container">
       <div className="app-main-box">
@@ -119,23 +99,11 @@ function AppUnauth({ changeAuth, changeModal }) {
               <p>placeholder content</p>
             </div>
           </div>
-          <div className="center-box">
-            <Switch>
-              <Route path="/" exact strict component={ContentWelcomePageUnauth} />
-              <Route path="/vehicles/search" exact strict render={() => renderSearchPageUnauth()} />
-              <Route path="/vehicles/:id/details" exact strict component={ContentDetailsPageUnauth} />
-            </Switch>
-          </div>
-          <div className="right-box">
-            <LoginBoxUnauth
-              changeAuth={changeAuth}
-              changeModal={changeModal}
-            />
-            <div className="right-content-box">
-              <h3>Right Box Content 1</h3>
-              <p>placeholder content</p>
-            </div>
-          </div>
+          <Switch>
+            <Route path="/" exact strict render={() => <ContentWelcomePageUnauth changeAuth={changeAuth} />} />
+            <Route path="/vehicles/search" exact strict render={() => <ContentSearchPageUnauth searchResults={searchResults} updateResults={updateResults} changeAuth={changeAuth}/>} />
+            <Route path="/vehicles/:id/details" exact strict render={() => <ContentDetailsPageUnauth changeAuth={changeAuth} />} />
+          </Switch>
         </div>
       </div>
     </div>
@@ -148,24 +116,17 @@ function App() {
   const [authenticated, setAuthenticated] = React.useState(false);
   const [modalProperties, setModalProperties] = React.useState({ visibility: "hidden", type: "loading" });
 
-  function changeModal(modalData) {
-    const { visibility, type } = { ...modalData };
-    setModalProperties({ visibility: visibility, type: type });
-  }
-
   function renderApp() {
     if (authenticated) {
       return (
         <AppAuth 
           changeAuth={bool => setAuthenticated(bool)}
-          changeModal={changeModal}
         />
       );
     } else {
       return (
         <AppUnauth 
           changeAuth={bool => setAuthenticated(bool)}
-          changeModal={changeModal}
         />
       );
     }
@@ -218,9 +179,11 @@ function App() {
   init();
   }, []);
 
-  if (!loaded) {
-    return <Modal modalProperties={modalProperties} modalEffect={null}/>
-  }
+/*   if (!loaded) {
+    setModalProperties({ visibility: "visible", type: "loading" });
+  } else {
+    setModalProperties({ visibility: "hidden", type: "loading" });
+  } */
 
   return (
     <Router>

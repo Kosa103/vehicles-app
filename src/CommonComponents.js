@@ -224,7 +224,7 @@ export function DisplaySearchResults({ searchResults }) {
                 <div className="container">
                     <div className="alert alert-info">
                         <strong>Click an entry</strong> to display all data
-            </div>
+                    </div>
                     <div className="search-results-box">
                         <table className="table table-striped">
                             <thead>
@@ -247,7 +247,7 @@ export function DisplaySearchResults({ searchResults }) {
                 <div className="container">
                     <div className="alert alert-info">
                         No vehicles to display
-          </div>
+                    </div>
                 </div>
             );
         }

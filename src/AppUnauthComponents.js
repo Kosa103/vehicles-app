@@ -2,17 +2,48 @@ import React from "react";
 import { Link } from 'react-router-dom';
 import { useParams } from "react-router-dom";
 
-import { SearchVehicles, DisplaySearchResults } from "./CommonComponents";
+import { SearchVehicles, DisplaySearchResults, Modal } from "./CommonComponents";
 
 
-export function ContentWelcomePageUnauth() {
+export function ContentWelcomePageUnauth({ changeAuth }) {
     return (
         <>
-            <OptionsBarUnauth />
-            <div className="content-box">
-                <div className="content-box welcome-page">
-                    <h3>Welcome to Online Vehicle Database!</h3>
-                    <p>Dear visitor! You can search for vehicles by fields in the vehicle's registration book. Please log in to add, modify or delete existing vehicles! Signing up is restricted for security reasons. Contact us for more information.</p>
+            <div className="center-box">
+                <OptionsBarUnauth />
+                <div className="content-box">
+                    <div className="content-box welcome-page">
+                        <h3>Welcome to Online Vehicle Database!</h3>
+                        <p>Dear visitor! You can search for vehicles by fields in the vehicle's registration book. Please log in to add, modify or delete existing vehicles! Signing up is restricted for security reasons. Contact us for more information.</p>
+                    </div>
+                </div>
+            </div>
+            <div className="right-box">
+                <LoginBoxUnauth changeAuth={changeAuth} />
+                <div className="right-content-box">
+                <h3>Right Box Content 1</h3>
+                <p>placeholder content</p>
+                </div>
+            </div>
+        </> 
+    );
+}
+
+
+export function ContentSearchPageUnauth({ updateResults, searchResults, changeAuth }) {
+    return (
+        <>
+            <div className="center-box">
+                <OptionsBarUnauth />
+                <div className="content-box">
+                    <SearchVehicles updateResults={updateResults} />
+                    <DisplaySearchResults searchResults={searchResults} />
+                </div>
+            </div>
+            <div className="right-box">
+                <LoginBoxUnauth changeAuth={changeAuth} />
+                <div className="right-content-box">
+                <h3>Right Box Content 1</h3>
+                <p>placeholder content</p>
                 </div>
             </div>
         </>
@@ -20,21 +51,7 @@ export function ContentWelcomePageUnauth() {
 }
 
 
-export function ContentSearchPageUnauth({ updateResults, searchResults }) {
-
-    return (
-        <>
-            <OptionsBarUnauth />
-            <div className="content-box">
-                <SearchVehicles updateResults={updateResults} />
-                <DisplaySearchResults searchResults={searchResults} />
-            </div>
-        </>
-    );
-}
-
-
-export function ContentDetailsPageUnauth() {
+export function ContentDetailsPageUnauth({ changeAuth }) {
     const { id } = useParams();
     const permissionAlert = React.useRef(null);
     const form = {
@@ -84,6 +101,7 @@ export function ContentDetailsPageUnauth() {
 
     return (
         <>
+        <div className="center-box">
             <OptionsBarPageUnauth />
             <div className="content-box">
                 <div className="content-box form-box">
@@ -135,6 +153,14 @@ export function ContentDetailsPageUnauth() {
                     </div>
                 </div>
             </div>
+        </div>
+        <div className="right-box">
+            <LoginBoxUnauth changeAuth={changeAuth} />
+            <div className="right-content-box">
+            <h3>Right Box Content 1</h3>
+            <p>placeholder content</p>
+            </div>
+        </div>
         </>
     );
 }
@@ -181,16 +207,17 @@ function OptionsBarPageUnauth() {
 
 
 
-export function LoginBoxUnauth({ changeAuth, changeModal }) {
+export function LoginBoxUnauth({ changeAuth }) {
     const [loginError, setLoginError] = React.useState(false);
+    const [modalProperties, setModalProperties] = React.useState({ visibility: "hidden", type: "loading" });
 
     const loginEmail = React.useRef(null);
     const loginPassword = React.useRef(null);
 
     async function initLogin() {
-        changeModal({ visibility: "visible", type: "loading" });
+        setModalProperties({ visibility: "visible", type: "loading" });
         await attemptLogin();
-        changeModal({ visibility: "hidden", type: "loading" });
+        setModalProperties({ visibility: "hidden", type: "loading" });
     }
 
     async function attemptLogin() {
@@ -254,6 +281,7 @@ export function LoginBoxUnauth({ changeAuth, changeModal }) {
 
     return (
         <div className="login-box">
+            <Modal modalProperties={modalProperties} modalEffect={null} />
             <h3>Login</h3>
             <p>Email:</p>
             <input type="email" size="30" maxLength="30" autoComplete="off" className="input login-email" id="login-email" ref={loginEmail} />
