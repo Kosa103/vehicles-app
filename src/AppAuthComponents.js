@@ -440,7 +440,7 @@ function DetailsFormField({ title, reference, value }) {
 function OptionsBarAuth() {
     return (
         <div className="options-bar-box">
-            <Link to="/" className="button options-button">Home</Link>
+            <Link to="/home" className="button options-button">Home</Link>
             <Link to="/vehicles/search" className="button options-button">Search Vehicles</Link>
             <Link to="/vehicles/add" className="button options-button">Add Vehicles</Link>
         </div>
@@ -491,7 +491,7 @@ function OptionsBarPageAuth({ vehicleId }) {
         <>
             <Modal modalProperties={modalProperties} modalEffect={modalEffect}/>
             <div className="options-bar-box">
-                <Link to="/" className="button options-button" >Home</Link>
+                <Link to="/home" className="button options-button" >Home</Link>
                 <Link to={`/vehicles/${vehicleId}/modify`} className="button options-button" >Modify Vehicle</Link>
                 <button className="button options-button" onClick={() => setModalProperties({ visibility: "visible", type: "deleteWarning" })}>Delete Vehicle</button>
             </div>
@@ -505,8 +505,8 @@ export function LoginBoxAuth({ changeAuth }) {
 
     function attemptLogout() {
         sessionStorage.removeItem("res");
-        changeAuth(false);
         setShouldRedirect(true);
+        changeAuth(false);
     }
 
     function renderLoginBox() {
@@ -526,15 +526,19 @@ export function LoginBoxAuth({ changeAuth }) {
                     onClick={() => attemptLogout()}>
                     Logout
                 </button>
-                {shouldRedirect ? <Redirect to="/" /> : <></>}
             </>
         );
     }
 
-    return (
-        <div className="login-box">
-            {renderLoginBox()}
-        </div>
-    );
+    if (shouldRedirect) {
+        console.log("redirecting triggered!");
+        return <Redirect to="/" />;
+    } else {
+        return (
+            <div className="login-box">
+                {renderLoginBox()}
+            </div>
+        );
+    }
 }
 

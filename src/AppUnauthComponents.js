@@ -187,7 +187,7 @@ function DetailsFormField({ title, reference, value }) {
 function OptionsBarUnauth() {
     return (
         <div className="options-bar-box">
-            <Link to="/" className="button options-button">Home</Link>
+            <Link to="/home" className="button options-button">Home</Link>
             <Link to="/vehicles/search" className="button options-button">Search Vehicles</Link>
             <button className="button options-button inactive-button" disabled>Add Vehicles</button>
         </div>
@@ -198,7 +198,7 @@ function OptionsBarUnauth() {
 function OptionsBarPageUnauth() {
     return (
         <div className="options-bar-box">
-            <Link to="/" className="button options-button" >Home</Link>
+            <Link to="/home" className="button options-button" >Home</Link>
             <button className="button options-button inactive-button" disabled>Modify Vehicle</button>
             <button className="button options-button inactive-button" disabled>Delete Vehicle</button>
         </div>

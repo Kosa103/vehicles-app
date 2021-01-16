@@ -1,6 +1,7 @@
 import React from "react";
 import {
   BrowserRouter as Router,
+  Redirect,
   Route,
   Switch,
 } from 'react-router-dom';
@@ -49,7 +50,8 @@ function AppAuth({ changeAuth }) {
               </div>
             </div>
             <Switch>
-              <Route path="/" exact strict render={() => <ContentWelcomePageAuth changeAuth={changeAuth} />} />
+              <Redirect exact from="/" to="/home" />
+              <Route path="/home" exact strict render={() => <ContentWelcomePageAuth changeAuth={changeAuth} />} />
               <Route path="/vehicles/search" exact strict render={() => <ContentSearchPageAuth searchResults={searchResults} updateResults={updateResults} changeAuth={changeAuth}/>} />
               <Route path="/vehicles/add" exact strict render={() => <ContentAddVehicles changeAuth={changeAuth}/>} />
               <Route path="/vehicles/:id/modify" exact strict render={() => <ContentAddVehicles changeAuth={changeAuth}/>} />
@@ -100,7 +102,10 @@ function AppUnauth({ changeAuth }) {
             </div>
           </div>
           <Switch>
-            <Route path="/" exact strict render={() => <ContentWelcomePageUnauth changeAuth={changeAuth} />} />
+            <Redirect exact from="/" to="/home"/>
+            <Redirect exact from="/vehicles/add" to="/home"/>
+            <Redirect from="/vehicles/:id/modify" to="/home"/>
+            <Route path="/home" exact strict render={() => <ContentWelcomePageUnauth changeAuth={changeAuth} />} />
             <Route path="/vehicles/search" exact strict render={() => <ContentSearchPageUnauth searchResults={searchResults} updateResults={updateResults} changeAuth={changeAuth}/>} />
             <Route path="/vehicles/:id/details" exact strict render={() => <ContentDetailsPageUnauth changeAuth={changeAuth} />} />
           </Switch>
