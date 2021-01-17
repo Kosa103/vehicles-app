@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from 'react-router-dom';
 import { useParams, Redirect } from "react-router-dom";
 
-import { SearchVehicles, DisplaySearchResults, Modal } from "./CommonComponents";
+import { Modal, SearchVehicles, DisplaySearchResults, RightBoxContent } from "./CommonComponents";
 
 
 export function ContentWelcomePageAuth({ changeAuth }) {
@@ -17,13 +17,7 @@ export function ContentWelcomePageAuth({ changeAuth }) {
                     </div>
                 </div>
             </div>
-            <div className="right-box">
-              <LoginBoxAuth changeAuth={changeAuth} />
-              <div className="right-content-box">
-                <h3>Right Box Content 1</h3>
-                <p>placeholder content</p>
-              </div>
-            </div>
+            <RightBoxAuth changeAuth={changeAuth} />
         </>
     );
 }
@@ -95,16 +89,16 @@ export function ContentAddVehicles({ changeAuth }) {
     function sanitizeInput(input) {
         const stringInput = input.toString();
         return (stringInput
-                .replace("(", "")
-                .replace(")", "")
-                .replace("{", "")
-                .replace("}", "")
-                .replace("*", "")
-                .replace(";", "")
-                .replace("%", "")
-                .replace("?", "")
-                .replace("!", "")
-                .toUpperCase());
+            .replace("(", "")
+            .replace(")", "")
+            .replace("{", "")
+            .replace("}", "")
+            .replace("*", "")
+            .replace(";", "")
+            .replace("%", "")
+            .replace("?", "")
+            .replace("!", "")
+            .toUpperCase());
     }
 
     function removeDash(input) {
@@ -147,9 +141,9 @@ export function ContentAddVehicles({ changeAuth }) {
             }
         }
         const token = JSON.parse(sessionStorage.getItem("res")).jwt;
-        const url = (!!id) ? 
-        `http://borzalom.ddns.net:1000/vehicles/${id}` :
-        "http://borzalom.ddns.net:1000/vehicles";
+        const url = (!!id) ?
+            `http://borzalom.ddns.net:1000/vehicles/${id}` :
+            "http://borzalom.ddns.net:1000/vehicles";
         const options = {
             method: (!!id) ? "PUT" : "POST",
             headers: {
@@ -189,7 +183,7 @@ export function ContentAddVehicles({ changeAuth }) {
                     if (vehicle[field] === null) {
                         form[field].current.value = "";
                     } else {
-                      form[field].current.value = vehicle[field];
+                        form[field].current.value = vehicle[field];
                     }
                 }
             }
@@ -253,13 +247,7 @@ export function ContentAddVehicles({ changeAuth }) {
                     </div>
                 </div>
             </div>
-            <div className="right-box">
-              <LoginBoxAuth changeAuth={changeAuth} />
-              <div className="right-content-box">
-                <h3>Right Box Content 1</h3>
-                <p>placeholder content</p>
-              </div>
-            </div>
+            <RightBoxAuth changeAuth={changeAuth} />
         </>
     );
 }
@@ -287,13 +275,7 @@ export function ContentSearchPageAuth({ updateResults, searchResults, changeAuth
                     <DisplaySearchResults searchResults={searchResults} />
                 </div>
             </div>
-            <div className="right-box">
-                <LoginBoxAuth changeAuth={changeAuth} />
-                <div className="right-content-box">
-                <h3>Right Box Content 1</h3>
-                <p>placeholder content</p>
-                </div>
-            </div>
+            <RightBoxAuth changeAuth={changeAuth} />
         </>
     );
 }
@@ -355,7 +337,7 @@ export function ContentDetailsPageAuth({ changeAuth }) {
     return (
         <>
             <div className="center-box">
-                <OptionsBarPageAuth vehicleId={vehicleId}/>
+                <OptionsBarPageAuth vehicleId={vehicleId} />
                 <div className="content-box">
                     <div className="content-box form-box">
                         <h2>Vehicle details</h2>
@@ -407,13 +389,7 @@ export function ContentDetailsPageAuth({ changeAuth }) {
                     </div>
                 </div>
             </div>
-            <div className="right-box">
-              <LoginBoxAuth changeAuth={changeAuth} />
-              <div className="right-content-box">
-                <h3>Right Box Content 1</h3>
-                <p>placeholder content</p>
-              </div>
-            </div>
+            <RightBoxAuth changeAuth={changeAuth} />
         </>
     );
 }
@@ -450,7 +426,7 @@ function OptionsBarAuth() {
 
 function OptionsBarPageAuth({ vehicleId }) {
     const [modalProperties, setModalProperties] = React.useState({ visibility: "hidden", type: "deleteWarning" });
-    
+
     function modalEffect(feedback) {
         if (feedback.delete === true) {
             attemptDeleteVehicle();
@@ -470,14 +446,14 @@ function OptionsBarPageAuth({ vehicleId }) {
             },
         };
         let responseStatus = 0;
-        
+
         await fetch(url, options)
             .then(res => {
                 responseStatus = res.status;
                 return res.json();
             })
             .catch(err => console.log(err));
-        
+
         if (responseStatus >= 200 && responseStatus < 300) {
             setModalProperties({ visibility: "visible", type: "deleteSuccess" });
         } else {
@@ -489,7 +465,7 @@ function OptionsBarPageAuth({ vehicleId }) {
 
     return (
         <>
-            <Modal modalProperties={modalProperties} modalEffect={modalEffect}/>
+            <Modal modalProperties={modalProperties} modalEffect={modalEffect} />
             <div className="options-bar-box">
                 <Link to="/home" className="button options-button" >Home</Link>
                 <Link to={`/vehicles/${vehicleId}/modify`} className="button options-button" >Modify Vehicle</Link>
@@ -500,7 +476,17 @@ function OptionsBarPageAuth({ vehicleId }) {
 }
 
 
-export function LoginBoxAuth({ changeAuth }) {
+function RightBoxAuth({ changeAuth }) {
+    return (
+        <div className="right-box">
+            <LoginBoxAuth changeAuth={changeAuth} />
+            <RightBoxContent />
+        </div>
+    );
+}
+
+
+function LoginBoxAuth({ changeAuth }) {
     const [shouldRedirect, setShouldRedirect] = React.useState(false);
 
     function attemptLogout() {

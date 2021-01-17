@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 
 export function Modal({ modalProperties, modalEffect }) {
-    const { visibility, type } = {...modalProperties};
+    const { visibility, type } = { ...modalProperties };
 
     function renderModalTextbox() {
         if (type === "loading") {
@@ -23,8 +23,8 @@ export function Modal({ modalProperties, modalEffect }) {
                     </h2>
                     <br />
                     <div className="modal-buttons-container">
-                        <button className="button modal-button" onClick={() => modalEffect({delete: true})}>Yes</button>
-                        <button className="button modal-button" onClick={() => modalEffect({delete: false})}>No</button>
+                        <button className="button modal-button" onClick={() => modalEffect({ delete: true })}>Yes</button>
+                        <button className="button modal-button" onClick={() => modalEffect({ delete: false })}>No</button>
                     </div>
                 </div>
             );
@@ -36,7 +36,7 @@ export function Modal({ modalProperties, modalEffect }) {
                     </h2>
                     <br />
                     <div className="modal-buttons-container">
-                        <button className="button modal-button" onClick={() => modalEffect({confirm: true})}>OK</button>
+                        <button className="button modal-button" onClick={() => modalEffect({ confirm: true })}>OK</button>
                     </div>
                 </div>
             );
@@ -48,7 +48,7 @@ export function Modal({ modalProperties, modalEffect }) {
                     </h2>
                     <br />
                     <div className="modal-buttons-container">
-                        <button className="button modal-button" onClick={() => modalEffect({confirm: true})}>OK</button>
+                        <button className="button modal-button" onClick={() => modalEffect({ confirm: true })}>OK</button>
                     </div>
                 </div>
             );
@@ -257,5 +257,15 @@ export function DisplaySearchResults({ searchResults }) {
         <>
             {renderTable()}
         </>
+    );
+}
+
+
+export function RightBoxContent() {
+    return (
+        <div className="right-content-box">
+            <h3>Right Box Content 1</h3>
+            <p>placeholder content</p>
+        </div>
     );
 }
