@@ -7,8 +7,12 @@ import {
 } from 'react-router-dom';
 import './App.css';
 
-import { Modal } from "./CommonComponents";
-import { ContentWelcomePageAuth, ContentDetailsPageAuth, ContentSearchPageAuth, ContentAddVehicles } from "./AppAuthComponents";
+import Modal from "./CommonComponents/Modal";
+import ContentWelcomePageAuth from "./AppAuthComponents/ContentWelcomePageAuth";
+import ContentSearchPageAuth from "./AppAuthComponents/ContentSearchPageAuth";
+import ContentAddVehicles from "./AppAuthComponents/ContentAddVehicles";
+import ContentDetailsPageAuth from "./AppAuthComponents/ContentDetailsPageAuth";
+
 import { ContentWelcomePageUnauth, ContentDetailsPageUnauth, ContentSearchPageUnauth } from "./AppUnauthComponents";
 
 
@@ -33,33 +37,33 @@ function AppAuth({ changeAuth }) {
   }
 
   return (
-      <div className=".container">
-        <div className="app-main-box">
-          <div className="title-box">
-            <h1 className="main-title">Online Vehicle Database</h1>
-          </div>
-          <div className="main-box">
-            <div className="left-box">
-              <div className="left-content-box">
-                <h3>Left Box Content 1</h3>
-                <p>placeholder content</p>
-              </div>
-              <div className="left-content-box">
-                <h3>Left Box Content 2</h3>
-                <p>placeholder content</p>
-              </div>
+    <div className=".container">
+      <div className="app-main-box">
+        <div className="title-box">
+          <h1 className="main-title">Online Vehicle Database</h1>
+        </div>
+        <div className="main-box">
+          <div className="left-box">
+            <div className="left-content-box">
+              <h3>Left Box Content 1</h3>
+              <p>placeholder content</p>
             </div>
-            <Switch>
-              <Redirect exact from="/" to="/home" />
-              <Route path="/home" exact strict render={() => <ContentWelcomePageAuth changeAuth={changeAuth} />} />
-              <Route path="/vehicles/search" exact strict render={() => <ContentSearchPageAuth searchResults={searchResults} updateResults={updateResults} changeAuth={changeAuth}/>} />
-              <Route path="/vehicles/add" exact strict render={() => <ContentAddVehicles changeAuth={changeAuth}/>} />
-              <Route path="/vehicles/:id/modify" exact strict render={() => <ContentAddVehicles changeAuth={changeAuth}/>} />
-              <Route path="/vehicles/:id/details" exact strict render={() => <ContentDetailsPageAuth changeAuth={changeAuth} />} />
-            </Switch>
+            <div className="left-content-box">
+              <h3>Left Box Content 2</h3>
+              <p>placeholder content</p>
+            </div>
           </div>
+          <Switch>
+            <Redirect exact from="/" to="/home" />
+            <Route path="/home" exact strict render={() => <ContentWelcomePageAuth changeAuth={changeAuth} />} />
+            <Route path="/vehicles/search" exact strict render={() => <ContentSearchPageAuth searchResults={searchResults} updateResults={updateResults} changeAuth={changeAuth} />} />
+            <Route path="/vehicles/add" exact strict render={() => <ContentAddVehicles changeAuth={changeAuth} />} />
+            <Route path="/vehicles/:id/modify" exact strict render={() => <ContentAddVehicles changeAuth={changeAuth} />} />
+            <Route path="/vehicles/:id/details" exact strict render={() => <ContentDetailsPageAuth changeAuth={changeAuth} />} />
+          </Switch>
         </div>
       </div>
+    </div>
   );
 }
 
@@ -102,11 +106,9 @@ function AppUnauth({ changeAuth }) {
             </div>
           </div>
           <Switch>
-            <Redirect exact from="/" to="/home"/>
-            <Redirect exact from="/vehicles/add" to="/home"/>
-            <Redirect from="/vehicles/:id/modify" to="/home"/>
+            <Redirect exact from="/" to="/home" />
             <Route path="/home" exact strict render={() => <ContentWelcomePageUnauth changeAuth={changeAuth} />} />
-            <Route path="/vehicles/search" exact strict render={() => <ContentSearchPageUnauth searchResults={searchResults} updateResults={updateResults} changeAuth={changeAuth}/>} />
+            <Route path="/vehicles/search" exact strict render={() => <ContentSearchPageUnauth searchResults={searchResults} updateResults={updateResults} changeAuth={changeAuth} />} />
             <Route path="/vehicles/:id/details" exact strict render={() => <ContentDetailsPageUnauth changeAuth={changeAuth} />} />
           </Switch>
         </div>
@@ -117,20 +119,19 @@ function AppUnauth({ changeAuth }) {
 
 
 function App() {
-  const [loaded, setLoaded] = React.useState(false);
   const [authenticated, setAuthenticated] = React.useState(false);
   const [modalProperties, setModalProperties] = React.useState({ visibility: "hidden", type: "loading" });
 
   function renderApp() {
     if (authenticated) {
       return (
-        <AppAuth 
+        <AppAuth
           changeAuth={bool => setAuthenticated(bool)}
         />
       );
     } else {
       return (
-        <AppUnauth 
+        <AppUnauth
           changeAuth={bool => setAuthenticated(bool)}
         />
       );
@@ -140,59 +141,54 @@ function App() {
   React.useEffect(() => {
     async function checkLoginValidity() {
       if (sessionStorage.getItem("res") !== null) {
-          const userData = JSON.parse(sessionStorage.getItem("res"));
-          if (userData.jwt !== null) {
-              const token = JSON.parse(sessionStorage.getItem("res")).jwt;
-              const url = "http://borzalom.ddns.net:1000/users/me";
-              const options = {
-                  method: "GET",
-                  headers: {
-                      'Content-type': 'application/json',
-                      Authorization: `Bearer ${token}`
-                  },
-              };
-              let responseStatus = 0;
+        const userData = JSON.parse(sessionStorage.getItem("res"));
+        if (userData.jwt !== null) {
+          const token = JSON.parse(sessionStorage.getItem("res")).jwt;
+          const url = "http://borzalom.ddns.net:1000/users/me";
+          const options = {
+            method: "GET",
+            headers: {
+              'Content-type': 'application/json',
+              Authorization: `Bearer ${token}`
+            },
+          };
+          let responseStatus = 0;
 
-              await fetch(url, options)
-                  .then(res => {
-                      responseStatus = res.status;
-                      return res.json();
-                  })
-                  .catch(err => console.log(err));
+          await fetch(url, options)
+            .then(res => {
+              responseStatus = res.status;
+              return res.json();
+            })
+            .catch(err => console.log(err));
 
-              if (responseStatus >= 200 && responseStatus < 300) {
-                  return true;
-              } else {
-                  console.log("Error code:");
-                  console.log(responseStatus);
-                  return false;
-              }
+          if (responseStatus >= 200 && responseStatus < 300) {
+            return true;
           } else {
-              return false;
+            console.log("Error code:");
+            console.log(responseStatus);
+            return false;
           }
-      } else {
+        } else {
           return false;
+        }
+      } else {
+        return false;
       }
-  }
+    }
 
-  async function init() {
+    async function init() {
+      setModalProperties({ visibility: "visible", type: "loading" });
       const result = await checkLoginValidity();
-      setLoaded(true);
+      setModalProperties({ visibility: "hidden", type: "loading" });
       setAuthenticated(result || false);
-  }
+    }
 
-  init();
+    init();
   }, []);
-
-/*   if (!loaded) {
-    setModalProperties({ visibility: "visible", type: "loading" });
-  } else {
-    setModalProperties({ visibility: "hidden", type: "loading" });
-  } */
 
   return (
     <Router>
-      <Modal modalProperties={modalProperties} modalEffect={null}/>
+      <Modal modalProperties={modalProperties} modalEffect={null} />
       {renderApp()}
     </Router>
   );

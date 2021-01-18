@@ -1,49 +1,14 @@
 import React from "react";
-import { Link } from 'react-router-dom';
 import { useParams } from "react-router-dom";
 
-import Modal from "./CommonComponents/Modal";
-import SearchVehicles from "./CommonComponents/SearchVehicles";
-import DisplaySearchResults from "./CommonComponents/DisplaySearchResults";
-import RightBoxContent from "./CommonComponents/RightBoxContent";
+import OptionsBarPageAuth from "./OptionsBarPageAuth";
+import DetailsFormField from "./DetailsFormField";
+import RightBoxAuth from "./RightBoxAuth";
 
 
-export function ContentWelcomePageUnauth({ changeAuth }) {
-    return (
-        <>
-            <div className="center-box">
-                <OptionsBarUnauth />
-                <div className="content-box">
-                    <div className="content-box welcome-page">
-                        <h3>Welcome to Online Vehicle Database!</h3>
-                        <p>Dear visitor! You can search for vehicles by fields in the vehicle's registration book. Please log in to add, modify or delete existing vehicles! Signing up is restricted for security reasons. Contact us for more information.</p>
-                    </div>
-                </div>
-            </div>
-            <RightBoxUnauth changeAuth={changeAuth}/>
-        </>
-    );
-}
-
-
-export function ContentSearchPageUnauth({ updateResults, searchResults, changeAuth }) {
-    return (
-        <>
-            <div className="center-box">
-                <OptionsBarUnauth />
-                <div className="content-box">
-                    <SearchVehicles updateResults={updateResults} />
-                    <DisplaySearchResults searchResults={searchResults} />
-                </div>
-            </div>
-            <RightBoxUnauth changeAuth={changeAuth}/>
-        </>
-    );
-}
-
-
-export function ContentDetailsPageUnauth({ changeAuth }) {
+export default function ContentDetailsPageAuth({ changeAuth }) {
     const { id } = useParams();
+
     const permissionAlert = React.useRef(null);
     const form = {
         registrationNumber: React.useRef(null),
@@ -73,13 +38,17 @@ export function ContentDetailsPageUnauth({ changeAuth }) {
         examValidUntil: React.useRef(null),
         comments: React.useRef(null),
     };
+
     const cachedSearchResults = sessionStorage.getItem("cachedSearchResults") ? JSON.parse(sessionStorage.getItem("cachedSearchResults")) : [];
 
     let values = {};
     let displayedValues = {};
+    let vehicleId;
+
     for (const entry of cachedSearchResults) {
         if (entry.id === Number(id)) {
             values = entry;
+            vehicleId = entry.id;
         }
     }
     for (const property of Object.keys(values)) {
@@ -93,7 +62,7 @@ export function ContentDetailsPageUnauth({ changeAuth }) {
     return (
         <>
             <div className="center-box">
-                <OptionsBarPageUnauth />
+                <OptionsBarPageAuth vehicleId={vehicleId} />
                 <div className="content-box">
                     <div className="content-box form-box">
                         <h2>Vehicle details</h2>
@@ -145,151 +114,7 @@ export function ContentDetailsPageUnauth({ changeAuth }) {
                     </div>
                 </div>
             </div>
-            <RightBoxUnauth changeAuth={changeAuth}/>
+            <RightBoxAuth changeAuth={changeAuth} />
         </>
     );
 }
-
-
-function DetailsFormField({ title, reference, value }) {
-    let className;
-
-    if (title === "[0000] Comments:") {
-        className = "input input-comments form-field";
-    } else {
-        className = "input input-text form-field";
-    }
-
-    return (
-        <div className="form-field">
-            <p>{title}</p>
-            <input type="text" className={className} ref={reference} value={value} disabled />
-        </div>
-    );
-}
-
-
-function OptionsBarUnauth() {
-    return (
-        <div className="options-bar-box">
-            <Link to="/home" className="button options-button">Home</Link>
-            <Link to="/vehicles/search" className="button options-button">Search Vehicles</Link>
-            <button className="button options-button inactive-button" disabled>Add Vehicles</button>
-        </div>
-    );
-}
-
-
-function OptionsBarPageUnauth() {
-    return (
-        <div className="options-bar-box">
-            <Link to="/home" className="button options-button" >Home</Link>
-            <button className="button options-button inactive-button" disabled>Modify Vehicle</button>
-            <button className="button options-button inactive-button" disabled>Delete Vehicle</button>
-        </div>
-    );
-}
-
-
-function RightBoxUnauth({ changeAuth }) {
-    return (
-        <div className="right-box">
-            <LoginBoxUnauth changeAuth={changeAuth} />
-            <RightBoxContent />
-        </div>
-    );
-}
-
-
-function LoginBoxUnauth({ changeAuth }) {
-    const [loginError, setLoginError] = React.useState(false);
-    const [modalProperties, setModalProperties] = React.useState({ visibility: "hidden", type: "loading" });
-
-    const loginEmail = React.useRef(null);
-    const loginPassword = React.useRef(null);
-
-    async function initLogin() {
-        setModalProperties({ visibility: "visible", type: "loading" });
-        await attemptLogin();
-        setModalProperties({ visibility: "hidden", type: "loading" });
-    }
-
-    async function attemptLogin() {
-        const loginEmailValue = loginEmail.current.value;
-        const loginPasswordValue = loginPassword.current.value;
-
-        if (loginEmailValue.length < 1 || loginPasswordValue.length < 1) {
-            attemptLogout();
-        } else {
-
-            const loginData = { identifier: loginEmailValue, password: loginPasswordValue };
-            const url = "http://borzalom.ddns.net:1000/auth/local";
-            const options = {
-                method: "POST",
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify(loginData)
-            };
-            let responseStatus = 0;
-
-            const response = await fetch(url, options)
-                .then(res => {
-                    responseStatus = res.status;
-                    return res.json();
-                })
-                .catch(err => console.log(err));
-
-            if (responseStatus >= 200 && responseStatus < 300) {
-                try {
-                    sessionStorage.setItem("res", JSON.stringify(response));
-                    changeAuth(true);
-                    setLoginError(false);
-                } catch (err) {
-                    attemptLogout();
-                    console.log(err);
-                }
-            } else {
-                sessionStorage.removeItem("res");
-                changeAuth(false);
-                setLoginError(true);
-            }
-        }
-    }
-
-    function attemptLogout() {
-        sessionStorage.removeItem("res");
-        changeAuth(false);
-        setLoginError(false);
-    }
-
-    React.useEffect(() => {
-        if (document.getElementById("login-failed-message") !== null) {
-            if (loginError) {
-                document.getElementById("login-failed-message").style.visibility = "visible";
-            } else {
-                document.getElementById("login-failed-message").style.visibility = "hidden";
-            }
-        }
-    }, [loginError]);
-
-    return (
-        <div className="login-box">
-            <Modal modalProperties={modalProperties} modalEffect={null} />
-            <h3>Login</h3>
-            <p>Email:</p>
-            <input type="email" size="30" maxLength="30" autoComplete="off" className="input login-email" id="login-email" ref={loginEmail} />
-            <p>Password:</p>
-            <input type="password" size="30" maxLength="30" autoComplete="off" className="input login-password" id="login-password" ref={loginPassword} />
-            <p id="login-failed-message">Login failed!</p>
-            <button
-                className="button login-button"
-                id="login-submit-button"
-                onClick={() => initLogin()}>
-                Login
-        </button>
-        </div>
-    );
-}
-
-
