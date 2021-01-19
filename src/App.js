@@ -13,7 +13,9 @@ import ContentSearchPageAuth from "./AppAuthComponents/ContentSearchPageAuth";
 import ContentAddVehicles from "./AppAuthComponents/ContentAddVehicles";
 import ContentDetailsPageAuth from "./AppAuthComponents/ContentDetailsPageAuth";
 
-import { ContentWelcomePageUnauth, ContentDetailsPageUnauth, ContentSearchPageUnauth } from "./AppUnauthComponents";
+import ContentWelcomePageUnauth from "./AppUnauthComponents/ContentWelcomePageUnauth";
+import ContentDetailsPageUnauth from "./AppUnauthComponents/ContentDetailsPageUnauth";
+import ContentSearchPageUnauth from "./AppUnauthComponents/ContentSearchPageUnauth";
 
 
 function AppAuth({ changeAuth }) {
